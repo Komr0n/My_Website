@@ -1,0 +1,73 @@
+<%- include('partials/header') %>
+
+<main class="page-container">
+    <div class="container">
+        <section class="certificates-section">
+            <h1>Certificates</h1>
+            <p class="section-description">Professional certifications and achievements in networking and security.</p>
+            
+            <div class="certificates-grid">
+                <% if (certificates && certificates.length > 0) { %>
+                    <% certificates.forEach(cert => { %>
+                        <div class="certificate-card" onclick="openModal('<%= cert.image %>', '<%= cert.title %>')">
+                            <div class="certificate-image">
+                                <img src="<%= cert.image %>" alt="<%= cert.title %>">
+                            </div>
+                            <div class="certificate-info">
+                                <h3><%= cert.title %></h3>
+                                <% if (cert.description) { %>
+                                    <p><%= cert.description %></p>
+                                <% } %>
+                                <% if (cert.issueDate) { %>
+                                    <p class="cert-date">Issued: <%= new Date(cert.issueDate).toLocaleDateString() %></p>
+                                <% } %>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="empty-state">
+                        <p>No certificates available.</p>
+                    </div>
+                <% } %>
+            </div>
+        </section>
+    </div>
+</main>
+
+<!-- Modal -->
+<div id="imageModal" class="modal">
+    <span class="close">&times;</span>
+    <img class="modal-content" id="modalImage">
+    <div class="modal-caption" id="modalCaption"></div>
+</div>
+
+<script>
+function openModal(imageSrc, title) {
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImage');
+    const modalCaption = document.getElementById('modalCaption');
+    
+    modal.style.display = 'block';
+    modalImg.src = imageSrc;
+    modalCaption.innerHTML = title;
+}
+
+const modal = document.getElementById('imageModal');
+const closeBtn = document.querySelector('.close');
+
+closeBtn.onclick = function() {
+    modal.style.display = 'none';
+}
+
+window.onclick = function(event) {
+    if (event.target === modal) {
+        modal.style.display = 'none';
+    }
+}
+</script>
+
+<%- include('partials/footer') %>
+
+
+
+

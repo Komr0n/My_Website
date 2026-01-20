@@ -1,0 +1,55 @@
+<%- include('partials/adminHeader') %>
+
+<div class="dashboard-grid">
+    <div class="dashboard-card">
+        <div class="card-icon">📁</div>
+        <div class="card-info">
+            <h3><%= projectsCount %></h3>
+            <p>Projects</p>
+            <a href="/admin/projects" class="card-link">Manage →</a>
+        </div>
+    </div>
+    
+    <div class="dashboard-card">
+        <div class="card-icon">🏆</div>
+        <div class="card-info">
+            <h3><%= certificatesCount %></h3>
+            <p>Certificates</p>
+            <a href="/admin/certificates" class="card-link">Manage →</a>
+        </div>
+    </div>
+    
+    <div class="dashboard-card">
+        <div class="card-icon">📝</div>
+        <div class="card-info">
+            <h3><%= postsCount %></h3>
+            <p>Posts</p>
+            <a href="/admin/posts" class="card-link">Manage →</a>
+        </div>
+    </div>
+    
+    <div class="dashboard-card">
+        <div class="card-icon">💬</div>
+        <div class="card-info">
+            <h3><%= messagesCount %></h3>
+            <p>New Messages</p>
+            <a href="/admin/messages" class="card-link">View →</a>
+        </div>
+    </div>
+</div>
+
+<div class="quick-actions">
+    <h2>Quick Actions</h2>
+    <div class="actions-grid">
+        <a href="/admin/projects/new" class="action-btn">+ Add Project</a>
+        <a href="/admin/certificates" class="action-btn">+ Upload Certificate</a>
+        <a href="/admin/posts/new" class="action-btn">+ Create Post</a>
+        <a href="/admin/about" class="action-btn">✏️ Edit About</a>
+    </div>
+</div>
+
+<%- include('partials/adminFooter') %>
+
+
+
+

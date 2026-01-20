@@ -1,0 +1,61 @@
+<%- include('partials/adminHeader') %>
+
+<div class="manage-container">
+    <div class="manage-header">
+        <h2>Manage Certificates</h2>
+        <button onclick="document.getElementById('uploadForm').style.display='block'" class="btn btn-primary">+ Upload Certificate</button>
+    </div>
+    
+    <div id="uploadForm" class="upload-form" style="display: none;">
+        <form method="POST" action="/admin/certificates" enctype="multipart/form-data" class="edit-form">
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" id="title" name="title" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" rows="3"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="issueDate">Issue Date</label>
+                <input type="date" id="issueDate" name="issueDate">
+            </div>
+            
+            <div class="form-group">
+                <label for="image">Certificate Image</label>
+                <input type="file" id="image" name="image" accept="image/*,application/pdf" required>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Upload</button>
+                <button type="button" onclick="document.getElementById('uploadForm').style.display='none'" class="btn btn-secondary">Cancel</button>
+            </div>
+        </form>
+    </div>
+    
+    <div class="certificates-grid">
+        <% if (certificates && certificates.length > 0) { %>
+            <% certificates.forEach(cert => { %>
+                <div class="cert-card">
+                    <img src="<%= cert.image %>" alt="<%= cert.title %>">
+                    <div class="cert-info">
+                        <h3><%= cert.title %></h3>
+                        <form action="/admin/certificates/<%= cert.id %>?_method=DELETE" method="POST" style="display: inline;">
+                            <button type="submit" class="btn btn-small btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <p>No certificates uploaded yet.</p>
+        <% } %>
+    </div>
+</div>
+
+<%- include('partials/adminFooter') %>
+
+
+
+

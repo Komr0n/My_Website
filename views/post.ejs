@@ -1,0 +1,192 @@
+<%- include('partials/header') %>
+
+<main class="page-container">
+    <div class="container">
+        <article class="post-single">
+            <% if (post.featuredImage) { %>
+                <div class="post-featured-image">
+                    <img src="<%= post.featuredImage %>" alt="<%= post.title %>">
+                </div>
+            <% } %>
+            
+            <header class="post-header">
+                <h1><%= post.title %></h1>
+                <div class="post-meta">
+                    <time datetime="<%= post.createdAt %>">
+                        <%= new Date(post.createdAt).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' }) %>
+                    </time>
+                </div>
+            </header>
+            
+            <% if (post.excerpt) { %>
+                <div class="post-excerpt">
+                    <p><%= post.excerpt %></p>
+                </div>
+            <% } %>
+            
+            <div class="post-content">
+                <%- post.content %>
+            </div>
+            
+            <div class="post-footer">
+                <a href="/blog" class="btn btn-secondary">← Back to Blog</a>
+            </div>
+        </article>
+    </div>
+</main>
+
+<style>
+.post-single {
+    max-width: 900px;
+    margin: 0 auto;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.post-featured-image {
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+    background: var(--bg-tertiary);
+}
+
+.post-featured-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.post-header {
+    padding: 2rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.post-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--accent);
+}
+
+.post-meta {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.post-excerpt {
+    padding: 1.5rem 2rem;
+    background: var(--bg-tertiary);
+    border-bottom: 1px solid var(--border);
+    font-style: italic;
+    color: var(--text-secondary);
+}
+
+.post-content {
+    padding: 2rem;
+    line-height: 1.8;
+    color: var(--text-primary);
+}
+
+.post-content h1,
+.post-content h2,
+.post-content h3,
+.post-content h4,
+.post-content h5,
+.post-content h6 {
+    color: var(--accent);
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.post-content p {
+    margin-bottom: 1.5rem;
+}
+
+.post-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin: 1.5rem 0;
+}
+
+.post-content ul,
+.post-content ol {
+    margin-left: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.post-content li {
+    margin-bottom: 0.5rem;
+}
+
+.post-content code {
+    background: var(--bg-tertiary);
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.9em;
+    color: var(--accent);
+}
+
+.post-content pre {
+    background: var(--bg-tertiary);
+    padding: 1rem;
+    border-radius: 4px;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    border: 1px solid var(--border);
+}
+
+.post-content pre code {
+    background: none;
+    padding: 0;
+    color: var(--text-primary);
+}
+
+.post-content a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent);
+    transition: all 0.3s;
+}
+
+.post-content a:hover {
+    color: var(--accent-hover);
+    border-bottom-color: var(--accent-hover);
+}
+
+.post-content blockquote {
+    border-left: 4px solid var(--accent);
+    padding-left: 1.5rem;
+    margin: 1.5rem 0;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.post-footer {
+    padding: 2rem;
+    border-top: 1px solid var(--border);
+}
+
+@media (max-width: 768px) {
+    .post-header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .post-featured-image {
+        height: 250px;
+    }
+    
+    .post-header,
+    .post-excerpt,
+    .post-content,
+    .post-footer {
+        padding: 1.5rem;
+    }
+}
+</style>
+
+<%- include('partials/footer') %>
+
+

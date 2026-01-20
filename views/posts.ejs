@@ -1,0 +1,79 @@
+<%- include('partials/header') %>
+
+<main class="page-container">
+    <div class="container">
+        <section>
+            <h1>Blog</h1>
+            <p class="section-description">Notes on networking, automation, and security.</p>
+
+            <div class="projects-grid">
+                <% if (posts && posts.length) { %>
+                    <% posts.forEach(post => { %>
+                        <article class="project-card post-card">
+                            <a href="/blog/<%= post.slug %>" class="post-link">
+                                <% if (post.featuredImage) { %>
+                                    <div class="project-image">
+                                        <img src="<%= post.featuredImage %>" alt="<%= post.title %>">
+                                    </div>
+                                <% } else { %>
+                                    <div class="project-image" style="background: var(--bg-tertiary); display: flex; align-items: center; justify-content: center;">
+                                        <span style="color: var(--text-secondary); font-size: 3rem;">📝</span>
+                                    </div>
+                                <% } %>
+                                <div class="project-content">
+                                    <h3><%= post.title %></h3>
+                                    <% if (post.excerpt) { %>
+                                        <p><%= post.excerpt %></p>
+                                    <% } else { %>
+                                        <p><%= post.content.replace(/<[^>]*>/g, '').substring(0, 160) %>...</p>
+                                    <% } %>
+                                    <p class="cert-date">Published: <%= new Date(post.createdAt).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' }) %></p>
+                                </div>
+                            </a>
+                        </article>
+                    <% }) %>
+                <% } else { %>
+                    <div class="empty-state">
+                        <p>No posts yet. Coming soon.</p>
+                    </div>
+                <% } %>
+            </div>
+        </section>
+    </div>
+    
+</main>
+
+<style>
+.post-card {
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.post-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.post-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 255, 153, 0.2);
+    border-color: var(--accent);
+}
+
+.post-card .project-content h3 {
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+    transition: color 0.3s;
+}
+
+.post-card:hover .project-content h3 {
+    color: var(--accent-hover);
+}
+</style>
+
+<%- include('partials/footer') %>
+
+
+
+

@@ -1,0 +1,44 @@
+<%- include('partials/adminHeader') %>
+
+<div class="manage-container">
+    <h2>Contact Messages</h2>
+    
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Message</th>
+                    <th>Date</th>
+                    <th>Read</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (messages && messages.length > 0) { %>
+                    <% messages.forEach(msg => { %>
+                        <tr class="<%= !msg.read ? 'unread' : '' %>">
+                            <td><%= msg.id %></td>
+                            <td><%= msg.name %></td>
+                            <td><a href="mailto:<%= msg.email %>"><%= msg.email %></a></td>
+                            <td><%= msg.message.substring(0, 50) %>...</td>
+                            <td><%= new Date(msg.createdAt).toLocaleDateString() %></td>
+                            <td><%= msg.read ? '✓' : '✗' %></td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="6" class="text-center">No messages yet.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<%- include('partials/adminFooter') %>
+
+
+
+

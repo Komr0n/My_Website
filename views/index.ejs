@@ -1,0 +1,81 @@
+<%- include('partials/header') %>
+
+<main class="hero">
+    <div class="hero-content">
+        <div class="terminal-window">
+            <div class="terminal-header">
+                <span class="terminal-button"></span>
+                <span class="terminal-button"></span>
+                <span class="terminal-button"></span>
+            </div>
+            <div class="terminal-body">
+                <div class="terminal-line">
+                    <span class="terminal-prompt">$</span>
+                    <span class="terminal-text" id="typing-text"></span>
+                    <span class="cursor">_</span>
+                </div>
+            </div>
+        </div>
+        
+        <h1 class="hero-title">Комрон Жураев — System Administrator & Security Enthusiast</h1>
+        <p class="hero-description">Networking | Automation | Information Security</p>
+        
+        <div class="hero-buttons">
+            <a href="/about" class="btn btn-primary">About Me</a>
+            <a href="/projects" class="btn btn-secondary">View Projects</a>
+            <a href="/certificates" class="btn btn-secondary">Certificates</a>
+            <a href="/contact" class="btn btn-outline">Contact</a>
+        </div>
+    </div>
+    
+    <div class="hero-bg">
+        <div class="grid-bg"></div>
+    </div>
+</main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const texts = [
+        'systemctl status network',
+        'cat /etc/hostname',
+        'ping -c 4 8.8.8.8',
+        'ls -la /opt',
+        'ps aux | grep nginx',
+        'whoami && pwd'
+    ];
+    let textIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    const typingElement = document.getElementById('typing-text');
+    
+    function typeText() {
+        const currentText = texts[textIndex];
+        
+        if (isDeleting) {
+            typingElement.textContent = currentText.substring(0, charIndex - 1);
+            charIndex--;
+            
+            if (charIndex === 0) {
+                isDeleting = false;
+                textIndex = (textIndex + 1) % texts.length;
+            }
+        } else {
+            typingElement.textContent = currentText.substring(0, charIndex + 1);
+            charIndex++;
+            
+            if (charIndex === currentText.length) {
+                isDeleting = true;
+                setTimeout(typeText, 2000);
+                return;
+            }
+        }
+        
+        setTimeout(typeText, isDeleting ? 50 : 100);
+    }
+    
+    typeText();
+});
+</script>
+
+<%- include('partials/footer') %>
+

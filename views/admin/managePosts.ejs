@@ -1,0 +1,48 @@
+<%- include('partials/adminHeader') %>
+
+<div class="manage-container">
+    <div class="manage-header">
+        <h2>Manage Posts</h2>
+        <a href="/admin/posts/new" class="btn btn-primary">+ Create Post</a>
+    </div>
+    
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Published</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (posts && posts.length > 0) { %>
+                    <% posts.forEach(post => { %>
+                        <tr>
+                            <td><%= post.id %></td>
+                            <td><%= post.title %></td>
+                            <td><%= post.published ? '✓ Yes' : '✗ No' %></td>
+                            <td class="actions">
+                                <a href="/admin/posts/<%= post.id %>/edit" class="btn btn-small">✏️ Edit</a>
+                                <form action="/admin/posts/<%= post.id %>?_method=DELETE" method="POST" style="display: inline;">
+                                    <button type="submit" class="btn btn-small btn-danger" onclick="return confirm('Are you sure?')">🗑️ Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="4" class="text-center">No posts yet. <a href="/admin/posts/new">Create one</a></td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<%- include('partials/adminFooter') %>
+
+
+
+

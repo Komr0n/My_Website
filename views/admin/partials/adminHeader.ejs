@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - <%= typeof title !== 'undefined' ? title : 'Dashboard' %></title>
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+    <div class="admin-container">
+        <aside class="admin-sidebar">
+            <div class="sidebar-header">
+                <h2>$ Admin</h2>
+                <span class="admin-user">user@system:~$</span>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="/admin" class="nav-link">📊 Dashboard</a></li>
+                    <li><a href="/admin/about" class="nav-link">👤 About</a></li>
+                    <li><a href="/admin/projects" class="nav-link">📁 Projects</a></li>
+                    <li><a href="/admin/certificates" class="nav-link">🏆 Certificates</a></li>
+                    <li><a href="/admin/posts" class="nav-link">📝 Posts</a></li>
+                    <li><a href="/admin/messages" class="nav-link">💬 Messages</a></li>
+                    <li><a href="/" class="nav-link" target="_blank">🌐 View Site</a></li>
+                    <li>
+                        <form action="/auth/admin/logout" method="POST">
+                            <button type="submit" class="nav-link logout-btn">🚪 Logout</button>
+                        </form>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <main class="admin-main">
+            <header class="admin-header">
+                <h1><%= typeof title !== 'undefined' ? title : 'Admin Panel' %></h1>
+            </header>
+            <div class="admin-content">
+
+
+
+

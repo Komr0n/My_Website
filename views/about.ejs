@@ -1,0 +1,38 @@
+<%- include('partials/header') %>
+
+<main class="page-container">
+    <div class="container">
+        <section class="about-section">
+            <div class="about-header">
+                <div class="about-avatar">
+                    <img src="<%= about.avatar %>" alt="<%= about.title %>" class="avatar-image">
+                </div>
+                <h1><%= about.title %></h1>
+                <h2 class="subtitle"><%= about.content %></h2>
+            </div>
+            
+            <div class="about-content">
+                <div class="about-text">
+                    <p>Experienced System Administrator specializing in network infrastructure, information security, and automation. Passionate about building robust, secure, and efficient IT systems.</p>
+                </div>
+                
+                <div class="skills-section">
+                    <h3>Skills & Technologies</h3>
+                    <div class="skills-grid">
+                        <% const skills = about.skills.split(',').map(s => s.trim()); %>
+                        <% skills.forEach(skill => { %>
+                            <div class="skill-chip">
+                                <span class="skill-icon">></span>
+                                <%= skill %>
+                            </div>
+                        <% }); %>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+
+<%- include('partials/footer') %>
+
+
