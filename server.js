@@ -50,8 +50,12 @@ app.use('/admin', requireAuth, adminRoutes);
 app.use('/auth', authRoutes);
 
 // Initialize database and start server
-sequelize.sync({ force: false }).then(() => {
-    console.log('Database synchronized');
+const shouldSync = process.env.DB_SYNC === 'true' || (process.env.NODE_ENV !== 'production' && process.env.DB_SYNC !== 'false');
+
+const dbInit = shouldSync ? sequelize.sync({ force: false }) : sequelize.authenticate();
+
+dbInit.then(() => {
+    console.log(shouldSync ? 'Database synchronized' : 'Database connection established');
     
     // Create default admin user if not exists
     const { User } = require('./models');

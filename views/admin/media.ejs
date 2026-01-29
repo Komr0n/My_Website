@@ -1,0 +1,39 @@
+<%- include('partials/adminHeader') %>
+
+<div class="manage-container">
+    <div class="manage-header">
+        <h2>Media Library</h2>
+    </div>
+
+    <form action="/admin/media" method="POST" enctype="multipart/form-data" class="upload-form">
+        <div class="form-group">
+            <label for="media">Upload Image</label>
+            <input type="file" id="media" name="media" accept="image/*" required>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </div>
+    </form>
+
+    <div class="table-container">
+        <% if (media && media.length > 0) { %>
+            <div class="media-grid">
+                <% media.forEach(item => { %>
+                    <div class="media-item">
+                        <img src="<%= item.url %>" alt="<%= item.originalName %>">
+                        <div class="media-item-footer">
+                            <span class="media-url"><%= item.originalName %></span>
+                            <form action="/admin/media/<%= item.id %>?_method=DELETE" method="POST">
+                                <button type="submit" class="btn btn-small btn-danger" onclick="return confirm('Delete this file?')">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        <% } else { %>
+            <p style="color: #8b949e;">No media uploaded yet.</p>
+        <% } %>
+    </div>
+</div>
+
+<%- include('partials/adminFooter') %>

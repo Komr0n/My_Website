@@ -1,6 +1,5 @@
 <%- include('partials/adminHeader') %>
 
-<!-- Quill.js WYSIWYG Editor -->
 <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 <style>
@@ -9,11 +8,11 @@
     font-size: 14px;
     background: #161b22;
     color: #c9d1d9;
-    min-height: 400px;
+    min-height: 220px;
 }
 
 .ql-editor {
-    min-height: 400px;
+    min-height: 220px;
 }
 
 .ql-toolbar {
@@ -82,124 +81,324 @@
     fill: #00ff99;
 }
 
-#editor-container {
+.editor-container {
     margin-bottom: 1rem;
+}
+
+.post-section {
+    border: 1px solid #21262d;
+    border-radius: 6px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    background: #0f141b;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.section-header h3 {
+    color: #00ff99;
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.media-library {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #21262d;
+}
+
+.media-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.media-item {
+    border: 1px solid #21262d;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #0d1117;
+}
+
+.media-item img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    display: block;
+}
+
+.media-item-footer {
+    padding: 0.75rem;
+    display: flex;
+    gap: 0.5rem;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.media-url {
+    font-size: 0.8rem;
+    color: #8b949e;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 110px;
 }
 </style>
 
 <div class="form-container">
     <h2><%= post ? 'Edit Post' : 'Create New Post' %></h2>
-    
+
+    <% const coverPreview = post && (post.coverImage || post.featuredImage) ? (post.coverImage || post.featuredImage) : null; %>
+    <% const publishedValue = post && post.publishedAt ? new Date(post.publishedAt).toISOString().slice(0, 16) : ''; %>
+
     <form method="POST" action="<%= post ? `/admin/posts/${post.id}?_method=PUT` : '/admin/posts' %>" enctype="multipart/form-data" class="edit-form">
         <div class="form-group">
             <label for="title">Title</label>
             <input type="text" id="title" name="title" value="<%= post ? post.title : '' %>" required>
         </div>
-        
+
         <div class="form-group">
-            <label for="excerpt">Excerpt</label>
+            <label for="subtitle">Subtitle (optional)</label>
+            <input type="text" id="subtitle" name="subtitle" value="<%= post ? post.subtitle : '' %>">
+        </div>
+
+        <div class="form-group">
+            <label for="excerpt">Excerpt (optional)</label>
             <textarea id="excerpt" name="excerpt" rows="2"><%= post ? post.excerpt : '' %></textarea>
         </div>
-        
+
         <div class="form-group">
-            <label for="featuredImage">Featured Image</label>
-            <% if (post && post.featuredImage) { %>
+            <label for="coverImage">Cover Image (required)</label>
+            <% if (coverPreview) { %>
                 <div style="margin-bottom: 1rem;">
-                    <img src="<%= post.featuredImage %>" alt="Featured image" style="max-width: 300px; border-radius: 4px; border: 2px solid #21262d;">
+                    <img src="<%= coverPreview %>" alt="Cover image" style="max-width: 300px; border-radius: 4px; border: 2px solid #21262d;">
                 </div>
             <% } %>
-            <input type="file" id="featuredImage" name="featuredImage" accept="image/*">
-            <small style="color: #8b949e; display: block; margin-top: 0.5rem;">This image will be displayed in the blog list</small>
+            <input type="file" id="coverImage" name="coverImage" accept="image/*" <%= coverPreview ? '' : 'required' %>>
+            <small style="color: #8b949e; display: block; margin-top: 0.5rem;">Shown on the blog list and post header.</small>
         </div>
-        
+
         <div class="form-group">
-            <label for="content">Content</label>
-            <textarea id="content" name="content" required style="display: none;"><%= post ? post.content : '' %></textarea>
-            <div id="editor-container"></div>
+            <label for="status">Status</label>
+            <select id="status" name="status">
+                <option value="draft" <%= post && post.status === 'published' ? '' : 'selected' %>>Draft</option>
+                <option value="published" <%= post && post.status === 'published' ? 'selected' : '' %>>Published</option>
+            </select>
         </div>
-        
+
         <div class="form-group">
-            <label for="published" class="checkbox-label">
-                <input type="checkbox" id="published" name="published" <%= post && post.published ? 'checked' : '' %>>
-                Publish Post
-            </label>
+            <label for="publishedAt">Published Date</label>
+            <input type="datetime-local" id="publishedAt" name="publishedAt" value="<%= publishedValue %>">
         </div>
-        
+
+        <div class="form-group">
+            <label>Post Sections</label>
+            <div id="sections-container">
+                <% sections.forEach((section, index) => { %>
+                    <div class="post-section" data-index="<%= index %>">
+                        <div class="section-header">
+                            <h3>Section <%= index + 1 %></h3>
+                            <% if (index > 0) { %>
+                                <button type="button" class="btn btn-small btn-secondary remove-section">Remove</button>
+                            <% } %>
+                        </div>
+                        <div class="form-group">
+                            <label>Section Title (optional)</label>
+                            <input type="text" class="section-title" value="<%= section.title || '' %>">
+                        </div>
+                        <div class="form-group">
+                            <label>Section Content</label>
+                            <textarea class="section-content" style="display: none;"><%- section.content || '' %></textarea>
+                            <div class="editor-container"></div>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+            <button type="button" class="btn btn-secondary" id="add-section">+ Add Section</button>
+            <input type="hidden" name="sections" id="sections-json">
+        </div>
+
         <div class="form-actions">
             <button type="submit" class="btn btn-primary"><%= post ? 'Update' : 'Create' %> Post</button>
             <a href="/admin/posts" class="btn btn-secondary">Cancel</a>
         </div>
     </form>
+
+    <div class="media-library">
+        <h3>Media Library</h3>
+        <p style="color: #8b949e;">Upload images in <a href="/admin/media">Media Library</a>. Click Insert to place an image in the active section.</p>
+        <% if (media && media.length > 0) { %>
+            <div class="media-grid">
+                <% media.forEach(item => { %>
+                    <div class="media-item">
+                        <img src="<%= item.url %>" alt="<%= item.originalName %>">
+                        <div class="media-item-footer">
+                            <span class="media-url"><%= item.originalName %></span>
+                            <button type="button" class="btn btn-small media-insert" data-url="<%= item.url %>">Insert</button>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        <% } else { %>
+            <p style="color: #8b949e;">No media yet.</p>
+        <% } %>
+    </div>
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    var quill = new Quill('#editor-container', {
-        theme: 'snow',
-        modules: {
-            toolbar: [
-                [{ 'header': [1, 2, 3, false] }],
-                ['bold', 'italic', 'underline', 'strike'],
-                [{ 'color': [] }, { 'background': [] }],
-                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                [{ 'align': [] }],
-                ['link', 'image', 'code-block'],
-                ['clean']
-            ]
-        },
-        placeholder: 'Start writing your post...'
-    });
+    var editors = [];
+    var activeEditor = null;
 
-    // Загружаем существующий контент
-    var contentTextarea = document.querySelector('#content');
-    if (contentTextarea && contentTextarea.value) {
-        quill.root.innerHTML = contentTextarea.value;
+    function createToolbar() {
+        return [
+            [{ 'header': [1, 2, 3, false] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'color': [] }, { 'background': [] }],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+            [{ 'align': [] }],
+            ['link', 'image', 'code-block'],
+            ['clean']
+        ];
     }
 
-    // Обработчик загрузки изображений
-    var toolbar = quill.getModule('toolbar');
-    toolbar.addHandler('image', function() {
-        var input = document.createElement('input');
-        input.setAttribute('type', 'file');
-        input.setAttribute('accept', 'image/*');
-        input.click();
+    function uploadImage(file, quill) {
+        var formData = new FormData();
+        formData.append('file', file);
 
-        input.onchange = function() {
-            var file = this.files[0];
-            if (file) {
-                var formData = new FormData();
-                formData.append('file', file);
-
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', '/admin/posts/upload-image', true);
-
-                xhr.onload = function() {
-                    if (xhr.status === 200) {
-                        var response = JSON.parse(xhr.responseText);
-                        var range = quill.getSelection(true);
-                        quill.insertEmbed(range.index, 'image', response.location);
-                        quill.setSelection(range.index + 1);
-                    } else {
-                        alert('Error uploading image');
-                    }
-                };
-
-                xhr.send(formData);
+        fetch('/admin/posts/upload-image', {
+            method: 'POST',
+            body: formData
+        }).then(function(response) {
+            if (!response.ok) {
+                throw new Error('Upload failed');
             }
-        };
-    });
-
-    // Сохраняем контент в textarea перед отправкой формы
-    var form = document.querySelector('form');
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            contentTextarea.value = quill.root.innerHTML;
+            return response.json();
+        }).then(function(data) {
+            var range = quill.getSelection(true) || { index: quill.getLength() };
+            quill.insertEmbed(range.index, 'image', data.location);
+            quill.setSelection(range.index + 1);
+        }).catch(function() {
+            alert('Error uploading image');
         });
     }
+
+    function initEditor(sectionEl) {
+        var editorEl = sectionEl.querySelector('.editor-container');
+        var contentEl = sectionEl.querySelector('.section-content');
+        var quill = new Quill(editorEl, {
+            theme: 'snow',
+            modules: {
+                toolbar: createToolbar()
+            },
+            placeholder: 'Write your section...'
+        });
+
+        if (contentEl && contentEl.value) {
+            quill.root.innerHTML = contentEl.value;
+        }
+
+        quill.on('selection-change', function(range) {
+            if (range) {
+                activeEditor = quill;
+            }
+        });
+
+        var toolbar = quill.getModule('toolbar');
+        toolbar.addHandler('image', function() {
+            var input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            input.setAttribute('accept', 'image/*');
+            input.click();
+            input.onchange = function() {
+                var file = this.files[0];
+                if (file) {
+                    uploadImage(file, quill);
+                }
+            };
+        });
+
+        editors.push({ element: sectionEl, quill: quill });
+    }
+
+    document.querySelectorAll('.post-section').forEach(function(sectionEl) {
+        initEditor(sectionEl);
+    });
+
+    document.getElementById('add-section').addEventListener('click', function() {
+        var container = document.getElementById('sections-container');
+        var index = container.children.length;
+        var wrapper = document.createElement('div');
+        wrapper.className = 'post-section';
+        wrapper.setAttribute('data-index', index);
+        wrapper.innerHTML = `
+            <div class="section-header">
+                <h3>Section ${index + 1}</h3>
+                <button type="button" class="btn btn-small btn-secondary remove-section">Remove</button>
+            </div>
+            <div class="form-group">
+                <label>Section Title (optional)</label>
+                <input type="text" class="section-title" value="">
+            </div>
+            <div class="form-group">
+                <label>Section Content</label>
+                <textarea class="section-content" style="display: none;"></textarea>
+                <div class="editor-container"></div>
+            </div>
+        `;
+        container.appendChild(wrapper);
+        initEditor(wrapper);
+    });
+
+    document.getElementById('sections-container').addEventListener('click', function(event) {
+        if (!event.target.classList.contains('remove-section')) {
+            return;
+        }
+        var section = event.target.closest('.post-section');
+        if (section) {
+            section.remove();
+            editors = editors.filter(function(entry) {
+                return entry.element !== section;
+            });
+        }
+    });
+
+    document.querySelectorAll('.media-insert').forEach(function(button) {
+        button.addEventListener('click', function() {
+            if (!activeEditor) {
+                alert('Click inside a section before inserting an image.');
+                return;
+            }
+            var url = button.getAttribute('data-url');
+            var range = activeEditor.getSelection(true) || { index: activeEditor.getLength() };
+            activeEditor.insertEmbed(range.index, 'image', url);
+            activeEditor.setSelection(range.index + 1);
+        });
+    });
+
+    var form = document.querySelector('form');
+    form.addEventListener('submit', function() {
+        var sections = [];
+        document.querySelectorAll('.post-section').forEach(function(sectionEl) {
+            var title = sectionEl.querySelector('.section-title').value.trim();
+            var editorEntry = editors.find(function(entry) {
+                return entry.element === sectionEl;
+            });
+            var content = editorEntry ? editorEntry.quill.root.innerHTML : '';
+            var cleaned = content.replace(/<p><br><\/p>/g, '').trim();
+            if (title || cleaned) {
+                sections.push({ title: title, content: content });
+            }
+        });
+        document.getElementById('sections-json').value = JSON.stringify(sections);
+    });
 });
 </script>
 
 <%- include('partials/adminFooter') %>
-
-
-

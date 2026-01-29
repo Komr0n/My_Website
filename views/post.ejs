@@ -3,17 +3,20 @@
 <main class="page-container">
     <div class="container">
         <article class="post-single">
-            <% if (post.featuredImage) { %>
+            <% if (post.coverImage || post.featuredImage) { %>
                 <div class="post-featured-image">
-                    <img src="<%= post.featuredImage %>" alt="<%= post.title %>">
+                    <img src="<%= post.coverImage || post.featuredImage %>" alt="<%= post.title %>">
                 </div>
             <% } %>
             
             <header class="post-header">
                 <h1><%= post.title %></h1>
+                <% if (post.subtitle) { %>
+                    <p class="post-subtitle"><%= post.subtitle %></p>
+                <% } %>
                 <div class="post-meta">
                     <time datetime="<%= post.createdAt %>">
-                        <%= new Date(post.createdAt).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' }) %>
+                        <%= new Date(post.publishedAt || post.createdAt).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' }) %>
                     </time>
                 </div>
             </header>
@@ -25,7 +28,14 @@
             <% } %>
             
             <div class="post-content">
-                <%- post.content %>
+                <% sections.forEach(section => { %>
+                    <% if (section.title) { %>
+                        <h2><%= section.title %></h2>
+                    <% } %>
+                    <div class="post-section-content">
+                        <%- section.content %>
+                    </div>
+                <% }) %>
             </div>
             
             <div class="post-footer">
@@ -67,6 +77,12 @@
     font-size: 2.5rem;
     margin-bottom: 1rem;
     color: var(--accent);
+}
+
+.post-subtitle {
+    color: var(--text-secondary);
+    margin-top: -0.5rem;
+    margin-bottom: 1rem;
 }
 
 .post-meta {

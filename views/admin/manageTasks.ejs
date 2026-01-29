@@ -1,0 +1,48 @@
+<%- include('partials/adminHeader') %>
+
+<div class="manage-container">
+    <div class="manage-header">
+        <h2>My Tasks</h2>
+        <a href="/admin/tasks/new" class="btn btn-primary">+ Add Task</a>
+    </div>
+    
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Done</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (tasks && tasks.length > 0) { %>
+                    <% tasks.forEach(task => { %>
+                        <tr>
+                            <td>
+                                <form action="/admin/tasks/<%= task.id %>/toggle?_method=PATCH" method="POST">
+                                    <input type="checkbox" class="task-checkbox" <%= task.completed ? 'checked' : '' %> onchange="this.form.submit()">
+                                </form>
+                            </td>
+                            <td class="<%= task.completed ? 'task-completed' : '' %>"><%= task.title %></td>
+                            <td class="<%= task.completed ? 'task-completed' : '' %>"><%= task.description || '-' %></td>
+                            <td class="actions">
+                                <a href="/admin/tasks/<%= task.id %>/edit" class="btn btn-small">✏️ Edit</a>
+                                <form action="/admin/tasks/<%= task.id %>?_method=DELETE" method="POST" style="display: inline;">
+                                    <button type="submit" class="btn btn-small btn-danger" onclick="return confirm('Delete this task?')">🗑️ Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="4" class="text-center">No tasks yet. <a href="/admin/tasks/new">Add one</a></td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<%- include('partials/adminFooter') %>

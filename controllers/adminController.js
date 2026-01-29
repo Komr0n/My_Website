@@ -1,4 +1,4 @@
-const { About, Project, Certificate, Post, ContactMessage } = require('../models');
+const { About, Project, Certificate, Post, ContactMessage, Task, Media } = require('../models');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
@@ -67,7 +67,7 @@ const uploadAvatar = multer({
 
 exports.uploadAvatar = uploadAvatar.single('avatar');
 
-// Multer configuration for post featured images
+// Multer configuration for post cover images
 const postImageStorage = multer.diskStorage({
     destination: (req, file, cb) => {
         const uploadPath = path.join(__dirname, '../public/uploads/posts');
@@ -97,24 +97,24 @@ const uploadPostImage = multer({
     }
 });
 
-exports.uploadPostImage = uploadPostImage.single('featuredImage');
+exports.uploadPostImage = uploadPostImage.single('coverImage');
 
-// Multer configuration for TinyMCE image uploads
-const editorImageStorage = multer.diskStorage({
+// Multer configuration for media library and editor images
+const mediaImageStorage = multer.diskStorage({
     destination: (req, file, cb) => {
-        const uploadPath = path.join(__dirname, '../public/uploads/editor');
+        const uploadPath = path.join(__dirname, '../public/uploads/media');
         if (!fs.existsSync(uploadPath)) {
             fs.mkdirSync(uploadPath, { recursive: true });
         }
         cb(null, uploadPath);
     },
     filename: (req, file, cb) => {
-        cb(null, 'editor-' + Date.now() + path.extname(file.originalname));
+        cb(null, 'media-' + Date.now() + path.extname(file.originalname));
     }
 });
 
-const uploadEditorImage = multer({ 
-    storage: editorImageStorage,
+const uploadMediaImage = multer({ 
+    storage: mediaImageStorage,
     limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
     fileFilter: (req, file, cb) => {
         const allowedTypes = /jpeg|jpg|png|gif|webp/;
@@ -129,16 +129,22 @@ const uploadEditorImage = multer({
     }
 });
 
-exports.uploadEditorImage = uploadEditorImage.single('file');
+exports.uploadEditorImage = uploadMediaImage.single('file');
+exports.uploadMedia = uploadMediaImage.single('media');
 
-// Upload image handler for TinyMCE editor
+// Upload image handler for editor
 exports.uploadEditorImageHandler = async (req, res) => {
     try {
         if (!req.file) {
             return res.status(400).json({ error: 'No file uploaded' });
         }
-        
-        const imageUrl = '/uploads/editor/' + req.file.filename;
+
+        const imageUrl = '/uploads/media/' + req.file.filename;
+        await Media.create({
+            filename: req.file.filename,
+            originalName: req.file.originalname,
+            url: imageUrl
+        });
         res.json({ location: imageUrl });
     } catch (error) {
         console.error(error);
@@ -153,13 +159,15 @@ exports.getDashboard = async (req, res) => {
         const certificatesCount = await Certificate.count();
         const postsCount = await Post.count();
         const messagesCount = await ContactMessage.count({ where: { read: false } });
+        const tasksCount = await Task.count();
         
         res.render('admin/dashboard', {
             title: 'Admin Dashboard',
             projectsCount,
             certificatesCount,
             postsCount,
-            messagesCount
+            messagesCount,
+            tasksCount
         });
     } catch (error) {
         console.error(error);
@@ -340,6 +348,51 @@ exports.deleteCertificate = async (req, res) => {
     }
 };
 
+function parseSections(raw) {
+    if (!raw) {
+        return [];
+    }
+    try {
+        const data = JSON.parse(raw);
+        if (!Array.isArray(data)) {
+            return [];
+        }
+        return data
+            .map(section => ({
+                title: section.title ? section.title.toString().trim() : '',
+                content: section.content ? section.content.toString() : ''
+            }))
+            .filter(section => section.title || section.content);
+    } catch (error) {
+        return [];
+    }
+}
+
+function buildDefaultSections(post) {
+    if (post && post.sections) {
+        try {
+            const parsed = JSON.parse(post.sections);
+            if (Array.isArray(parsed) && parsed.length) {
+                return parsed;
+            }
+        } catch (error) {
+            return [{ title: '', content: post.content || '' }];
+        }
+    }
+    if (post && post.content) {
+        return [{ title: '', content: post.content }];
+    }
+    return [{ title: '', content: '' }];
+}
+
+function buildExcerpt(excerpt, html) {
+    if (excerpt && excerpt.trim()) {
+        return excerpt.trim();
+    }
+    const text = html ? html.replace(/<[^>]*>/g, '') : '';
+    return text.substring(0, 160);
+}
+
 // Post management
 exports.managePosts = async (req, res) => {
     try {
@@ -351,27 +404,53 @@ exports.managePosts = async (req, res) => {
     }
 };
 
-exports.addPost = (req, res) => {
-    res.render('admin/editPost', { post: null, title: 'Add Post' });
+exports.addPost = async (req, res) => {
+    try {
+        const media = await Media.findAll({ order: [['createdAt', 'DESC']] });
+        const sections = buildDefaultSections();
+        res.render('admin/editPost', { post: null, sections, media, title: 'Add Post' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error loading post editor');
+    }
 };
 
 exports.createPost = async (req, res) => {
     try {
-        const { title, content, excerpt, published } = req.body;
-        const slug = title.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
-        
-        let featuredImagePath = null;
-        if (req.file) {
-            featuredImagePath = '/uploads/posts/' + req.file.filename;
+        const { title, subtitle, excerpt, status, publishedAt } = req.body;
+        const sections = parseSections(req.body.sections);
+        const mainContent = sections[0] ? sections[0].content : '';
+
+        if (!title || !title.trim()) {
+            return res.status(400).send('Title is required');
         }
-        
+        if (!mainContent || !mainContent.trim()) {
+            return res.status(400).send('At least one section with content is required');
+        }
+
+        let coverImagePath = null;
+        if (req.file) {
+            coverImagePath = '/uploads/posts/' + req.file.filename;
+        }
+        if (!coverImagePath) {
+            return res.status(400).send('Cover image is required');
+        }
+
+        const finalStatus = status === 'published' ? 'published' : 'draft';
+        const finalPublishedAt = finalStatus === 'published'
+            ? (publishedAt ? new Date(publishedAt) : new Date())
+            : null;
+
         await Post.create({ 
-            title, 
-            content, 
-            excerpt, 
-            published: published === 'on', 
-            slug,
-            featuredImage: featuredImagePath
+            title: title.trim(),
+            subtitle: subtitle ? subtitle.trim() : '',
+            content: mainContent,
+            sections: JSON.stringify(sections),
+            excerpt: buildExcerpt(excerpt, mainContent),
+            status: finalStatus,
+            publishedAt: finalPublishedAt,
+            coverImage: coverImagePath,
+            featuredImage: coverImagePath
         });
         res.redirect('/admin/posts');
     } catch (error) {
@@ -386,7 +465,9 @@ exports.editPost = async (req, res) => {
         if (!post) {
             return res.status(404).send('Post not found');
         }
-        res.render('admin/editPost', { post, title: 'Edit Post' });
+        const media = await Media.findAll({ order: [['createdAt', 'DESC']] });
+        const sections = buildDefaultSections(post);
+        res.render('admin/editPost', { post, sections, media, title: 'Edit Post' });
     } catch (error) {
         console.error(error);
         res.status(500).send('Error loading post');
@@ -399,25 +480,52 @@ exports.updatePost = async (req, res) => {
         if (!post) {
             return res.status(404).send('Post not found');
         }
-        
-        const { title, content, excerpt, published } = req.body;
-        const slug = title.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
-        
-        const updateData = { title, content, excerpt, published: published === 'on', slug };
-        
+
+        const { title, subtitle, excerpt, status, publishedAt } = req.body;
+        const sections = parseSections(req.body.sections);
+        const mainContent = sections[0] ? sections[0].content : '';
+
+        if (!title || !title.trim()) {
+            return res.status(400).send('Title is required');
+        }
+        if (!mainContent || !mainContent.trim()) {
+            return res.status(400).send('At least one section with content is required');
+        }
+
+        const finalStatus = status === 'published' ? 'published' : 'draft';
+        let finalPublishedAt = null;
+        if (finalStatus === 'published') {
+            finalPublishedAt = publishedAt ? new Date(publishedAt) : (post.publishedAt || new Date());
+        }
+
+        const updateData = {
+            title: title.trim(),
+            subtitle: subtitle ? subtitle.trim() : '',
+            content: mainContent,
+            sections: JSON.stringify(sections),
+            excerpt: buildExcerpt(excerpt, mainContent),
+            status: finalStatus,
+            publishedAt: finalPublishedAt
+        };
+
         if (req.file) {
-            // Delete old featured image if exists
-            if (post.featuredImage && post.featuredImage.startsWith('/uploads/posts/')) {
-                const oldImagePath = path.join(__dirname, '../public', post.featuredImage);
-                if (fs.existsSync(oldImagePath)) {
-                    fs.unlinkSync(oldImagePath);
+            const oldImagePath = post.coverImage || post.featuredImage;
+            if (oldImagePath && oldImagePath.startsWith('/uploads/posts/')) {
+                const oldFilePath = path.join(__dirname, '../public', oldImagePath);
+                if (fs.existsSync(oldFilePath)) {
+                    fs.unlinkSync(oldFilePath);
                 }
             }
-            updateData.featuredImage = '/uploads/posts/' + req.file.filename;
+            updateData.coverImage = '/uploads/posts/' + req.file.filename;
+            updateData.featuredImage = updateData.coverImage;
         }
-        
+
+        if (!updateData.coverImage && !post.coverImage && !post.featuredImage) {
+            return res.status(400).send('Cover image is required');
+        }
+
         await post.update(updateData);
-        
+
         res.redirect('/admin/posts');
     } catch (error) {
         console.error(error);
@@ -432,11 +540,12 @@ exports.deletePost = async (req, res) => {
             return res.status(404).send('Post not found');
         }
         
-        // Delete featured image if exists
-        if (post.featuredImage && post.featuredImage.startsWith('/uploads/posts/')) {
-            const imagePath = path.join(__dirname, '../public', post.featuredImage);
-            if (fs.existsSync(imagePath)) {
-                fs.unlinkSync(imagePath);
+        // Delete cover image if exists
+        const imagePath = post.coverImage || post.featuredImage;
+        if (imagePath && imagePath.startsWith('/uploads/posts/')) {
+            const filePath = path.join(__dirname, '../public', imagePath);
+            if (fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath);
             }
         }
         
@@ -448,6 +557,55 @@ exports.deletePost = async (req, res) => {
     }
 };
 
+// Media library
+exports.manageMedia = async (req, res) => {
+    try {
+        const media = await Media.findAll({ order: [['createdAt', 'DESC']] });
+        res.render('admin/media', { media, title: 'Media Library' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error loading media library');
+    }
+};
+
+exports.addMedia = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).send('No file uploaded');
+        }
+        const imageUrl = '/uploads/media/' + req.file.filename;
+        await Media.create({
+            filename: req.file.filename,
+            originalName: req.file.originalname,
+            url: imageUrl
+        });
+        res.redirect('/admin/media');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error uploading media');
+    }
+};
+
+exports.deleteMedia = async (req, res) => {
+    try {
+        const media = await Media.findByPk(req.params.id);
+        if (!media) {
+            return res.status(404).send('Media not found');
+        }
+        if (media.url && media.url.startsWith('/uploads/media/')) {
+            const filePath = path.join(__dirname, '../public', media.url);
+            if (fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath);
+            }
+        }
+        await media.destroy();
+        res.redirect('/admin/media');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error deleting media');
+    }
+};
+
 // Messages
 exports.getMessages = async (req, res) => {
     try {
@@ -456,6 +614,101 @@ exports.getMessages = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).send('Error loading messages');
+    }
+};
+
+// Tasks
+exports.manageTasks = async (req, res) => {
+    try {
+        const tasks = await Task.findAll({
+            order: [
+                ['completed', 'ASC'],
+                ['createdAt', 'DESC']
+            ]
+        });
+        res.render('admin/manageTasks', { tasks, title: 'My Tasks' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error loading tasks');
+    }
+};
+
+exports.addTask = (req, res) => {
+    res.render('admin/editTask', { task: null, title: 'Add Task' });
+};
+
+exports.createTask = async (req, res) => {
+    try {
+        const { title, description, completed } = req.body;
+        await Task.create({
+            title: title && title.trim() ? title.trim() : 'Untitled Task',
+            description: description ? description.trim() : '',
+            completed: completed === 'on'
+        });
+        res.redirect('/admin/tasks');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error creating task');
+    }
+};
+
+exports.editTask = async (req, res) => {
+    try {
+        const task = await Task.findByPk(req.params.id);
+        if (!task) {
+            return res.status(404).send('Task not found');
+        }
+        res.render('admin/editTask', { task, title: 'Edit Task' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error loading task');
+    }
+};
+
+exports.updateTask = async (req, res) => {
+    try {
+        const task = await Task.findByPk(req.params.id);
+        if (!task) {
+            return res.status(404).send('Task not found');
+        }
+        const { title, description, completed } = req.body;
+        await task.update({
+            title: title && title.trim() ? title.trim() : task.title,
+            description: description ? description.trim() : '',
+            completed: completed === 'on'
+        });
+        res.redirect('/admin/tasks');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error updating task');
+    }
+};
+
+exports.toggleTask = async (req, res) => {
+    try {
+        const task = await Task.findByPk(req.params.id);
+        if (!task) {
+            return res.status(404).send('Task not found');
+        }
+        await task.update({ completed: !task.completed });
+        res.redirect('/admin/tasks');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error toggling task');
+    }
+};
+
+exports.deleteTask = async (req, res) => {
+    try {
+        const task = await Task.findByPk(req.params.id);
+        if (!task) {
+            return res.status(404).send('Task not found');
+        }
+        await task.destroy();
+        res.redirect('/admin/tasks');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error deleting task');
     }
 };
 

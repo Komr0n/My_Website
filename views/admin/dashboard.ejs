@@ -29,6 +29,15 @@
     </div>
     
     <div class="dashboard-card">
+        <div class="card-icon">T</div>
+        <div class="card-info">
+            <h3><%= tasksCount %></h3>
+            <p>Tasks</p>
+            <a href="/admin/tasks" class="card-link">Manage -></a>
+        </div>
+    </div>
+    
+    <div class="dashboard-card">
         <div class="card-icon">💬</div>
         <div class="card-info">
             <h3><%= messagesCount %></h3>
@@ -44,6 +53,7 @@
         <a href="/admin/projects/new" class="action-btn">+ Add Project</a>
         <a href="/admin/certificates" class="action-btn">+ Upload Certificate</a>
         <a href="/admin/posts/new" class="action-btn">+ Create Post</a>
+        <a href="/admin/tasks/new" class="action-btn">+ Add Task</a>
         <a href="/admin/about" class="action-btn">✏️ Edit About</a>
     </div>
 </div>

@@ -1,4 +1,5 @@
 const { About, Project, Certificate, Post } = require('../models');
+const { Op } = require('sequelize');
 
 exports.getAbout = async (req, res) => {
     try {
@@ -46,8 +47,11 @@ exports.getCertificates = async (req, res) => {
 exports.getPosts = async (req, res) => {
     try {
         const posts = await Post.findAll({ 
-            where: { published: true },
-            order: [['createdAt', 'DESC']]
+            where: { 
+                status: 'published',
+                publishedAt: { [Op.lte]: new Date() }
+            },
+            order: [['publishedAt', 'DESC']]
         });
         res.render('posts', { posts, title: 'Blog' });
     } catch (error) {
@@ -61,15 +65,31 @@ exports.getPost = async (req, res) => {
         const post = await Post.findOne({ 
             where: { 
                 slug: req.params.slug,
-                published: true 
+                status: 'published',
+                publishedAt: { [Op.lte]: new Date() }
             }
         });
         
         if (!post) {
             return res.status(404).send('Post not found');
         }
-        
-        res.render('post', { post, title: post.title });
+
+        let sections = [];
+        if (post.sections) {
+            try {
+                const parsed = JSON.parse(post.sections);
+                if (Array.isArray(parsed)) {
+                    sections = parsed;
+                }
+            } catch (error) {
+                sections = [];
+            }
+        }
+        if (!sections.length) {
+            sections = [{ title: '', content: post.content }];
+        }
+
+        res.render('post', { post, sections, title: post.title });
     } catch (error) {
         console.error(error);
         res.status(500).send('Error loading post');

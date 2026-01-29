@@ -11,9 +11,9 @@
                     <% posts.forEach(post => { %>
                         <article class="project-card post-card">
                             <a href="/blog/<%= post.slug %>" class="post-link">
-                                <% if (post.featuredImage) { %>
+                                <% if (post.coverImage || post.featuredImage) { %>
                                     <div class="project-image">
-                                        <img src="<%= post.featuredImage %>" alt="<%= post.title %>">
+                                        <img src="<%= post.coverImage || post.featuredImage %>" alt="<%= post.title %>">
                                     </div>
                                 <% } else { %>
                                     <div class="project-image" style="background: var(--bg-tertiary); display: flex; align-items: center; justify-content: center;">
@@ -22,12 +22,15 @@
                                 <% } %>
                                 <div class="project-content">
                                     <h3><%= post.title %></h3>
+                                    <% if (post.subtitle) { %>
+                                        <p class="post-subtitle"><%= post.subtitle %></p>
+                                    <% } %>
                                     <% if (post.excerpt) { %>
                                         <p><%= post.excerpt %></p>
                                     <% } else { %>
                                         <p><%= post.content.replace(/<[^>]*>/g, '').substring(0, 160) %>...</p>
                                     <% } %>
-                                    <p class="cert-date">Published: <%= new Date(post.createdAt).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' }) %></p>
+                                    <p class="cert-date">Published: <%= new Date(post.publishedAt || post.createdAt).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' }) %></p>
                                 </div>
                             </a>
                         </article>
@@ -70,6 +73,11 @@
 .post-card:hover .project-content h3 {
     color: var(--accent-hover);
 }
+.post-subtitle {
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
 </style>
 
 <%- include('partials/footer') %>
