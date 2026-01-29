@@ -16,20 +16,21 @@
   "author": "Komron Juraev",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^5.1.1",
-    "dotenv": "^16.3.1",
-    "ejs": "^3.1.9",
-    "express": "^4.18.2",
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.2.3",
+    "ejs": "^4.0.1",
+    "express": "^5.2.1",
     "express-session": "^1.17.3",
     "method-override": "^3.0.0",
-    "multer": "^1.4.5-lts.1",
+    "multer": "^2.0.2",
     "nodemailer": "^7.0.10",
     "sequelize": "^6.35.0",
-    "sqlite3": "^5.1.6"
+    "sqlite3": "^5.1.7"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"
+  },
+  "overrides": {
+    "tar": "^7.5.7"
   }
 }
-
-
