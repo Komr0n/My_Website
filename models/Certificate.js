@@ -11,12 +11,24 @@ const Certificate = sequelize.define('Certificate', {
         type: DataTypes.STRING,
         allowNull: false
     },
+    titleEn: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: ''
+    },
     image: {
         type: DataTypes.STRING,
         allowNull: false
     },
     description: {
-        type: DataTypes.TEXT
+        type: DataTypes.TEXT,
+        allowNull: false,
+        defaultValue: ''
+    },
+    descriptionEn: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        defaultValue: ''
     },
     issueDate: {
         type: DataTypes.DATE

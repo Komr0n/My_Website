@@ -39,6 +39,11 @@ body {
     flex-direction: column;
 }
 
+img {
+    max-width: 100%;
+    display: block;
+}
+
 .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -60,6 +65,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 1rem;
 }
 
 .nav-brand {
@@ -81,6 +87,41 @@ body {
     display: flex;
     list-style: none;
     gap: 2rem;
+    align-items: center;
+}
+
+.nav-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg-tertiary);
+    cursor: pointer;
+}
+
+.nav-toggle span {
+    width: 18px;
+    height: 2px;
+    background: var(--text-primary);
+    margin: 0 auto;
+    transition: transform 0.3s, opacity 0.3s;
+}
+
+.nav-toggle[aria-expanded="true"] span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+
+.nav-toggle[aria-expanded="true"] span:nth-child(2) {
+    opacity: 0;
+}
+
+.nav-toggle[aria-expanded="true"] span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
 }
 
 .nav-menu a {
@@ -423,6 +464,8 @@ section h3 {
     border-radius: 8px;
     overflow: hidden;
     transition: all 0.3s;
+    content-visibility: auto;
+    contain-intrinsic-size: 320px;
 }
 
 .project-card:hover {
@@ -481,6 +524,7 @@ section h3 {
 .project-links {
     display: flex;
     gap: 0.5rem;
+    flex-wrap: wrap;
 }
 
 /* Certificates Section */
@@ -497,6 +541,8 @@ section h3 {
     overflow: hidden;
     cursor: pointer;
     transition: all 0.3s;
+    content-visibility: auto;
+    contain-intrinsic-size: 280px;
 }
 
 .certificate-card:hover {
@@ -728,25 +774,138 @@ section h3 {
 
 /* Responsive */
 @media (max-width: 768px) {
+    .container {
+        padding: 0 16px;
+    }
+
+    .page-container {
+        padding: 2.5rem 0;
+    }
+
+    .navbar {
+        padding: 0.85rem 0;
+    }
+
+    .nav-toggle {
+        display: flex;
+    }
+
+    .nav-menu {
+        display: none;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        gap: 0.5rem;
+        margin-top: 0.75rem;
+        padding-top: 0.75rem;
+        border-top: 1px solid var(--border);
+    }
+
+    .nav-menu.is-open {
+        display: flex;
+    }
+
+    .nav-menu li {
+        width: 100%;
+    }
+
+    .nav-menu a {
+        display: inline-block;
+        padding: 0.35rem 0;
+    }
+
     .hero-title {
         font-size: 2rem;
+    }
+
+    .hero {
+        min-height: auto;
+        padding: 3rem 0;
     }
     
     .hero-buttons {
         flex-direction: column;
+        align-items: center;
+    }
+
+    .hero-buttons .btn {
+        width: 100%;
+        max-width: 320px;
+        text-align: center;
     }
     
     .contact-container {
         grid-template-columns: 1fr;
+        gap: 1.5rem;
     }
     
-    .nav-menu {
-        gap: 1rem;
+    .terminal-body {
+        padding: 1rem;
+        font-size: 0.82rem;
+        word-break: break-word;
     }
     
     .projects-grid,
     .certificates-grid {
         grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+
+    section h1 {
+        font-size: 2rem;
+    }
+
+    section h2 {
+        font-size: 1.45rem;
+    }
+
+    .about-content,
+    .contact-info,
+    .contact-form {
+        padding: 1.35rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0 14px;
+    }
+
+    .hero-title {
+        font-size: 1.6rem;
+    }
+
+    .hero-description {
+        font-size: 0.98rem;
+    }
+
+    .about-avatar {
+        width: 150px;
+        height: 150px;
+    }
+
+    .contact-item {
+        align-items: flex-start;
+    }
+
+    .footer {
+        padding-top: 2rem;
+    }
+
+    .close {
+        top: 8px;
+        right: 14px;
+        font-size: 32px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
     }
 }
 

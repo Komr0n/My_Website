@@ -1,23 +1,26 @@
 <%- include('partials/header') %>
+<% const isEn = currentLang === 'en'; %>
 
 <main class="page-container">
     <div class="container">
         <section class="projects-section">
-            <h1>My Projects</h1>
-            <p class="section-description">Collection of projects showcasing network infrastructure, automation, and security solutions.</p>
+            <h1><%= isEn ? 'My Projects' : 'Мои проекты' %></h1>
+            <p class="section-description"><%= isEn
+                ? 'Collection of projects showcasing network infrastructure, automation, and security solutions.'
+                : 'Подборка проектов по сетевой инфраструктуре, автоматизации и безопасности.' %></p>
             
             <div class="projects-grid">
                 <% if (projects && projects.length > 0) { %>
                     <% projects.forEach(project => { %>
                         <div class="project-card">
                             <div class="project-image">
-                                <img src="<%= project.image %>" alt="<%= project.title %>">
+                                <img src="<%= project.image %>" alt="<%= project.title %>" loading="lazy" decoding="async">
                             </div>
                             <div class="project-content">
                                 <h3><%= project.title %></h3>
                                 <p><%= project.description %></p>
                                 <div class="project-tech">
-                                    <strong>Technologies:</strong>
+                                    <strong><%= isEn ? 'Technologies:' : 'Технологии:' %></strong>
                                     <div class="tech-tags">
                                         <% const techs = project.technologies.split(',').map(t => t.trim()); %>
                                         <% techs.forEach(tech => { %>
@@ -30,7 +33,7 @@
                                         <a href="<%= project.githubLink %>" target="_blank" class="btn btn-small">GitHub</a>
                                     <% } %>
                                     <% if (project.liveLink) { %>
-                                        <a href="<%= project.liveLink %>" target="_blank" class="btn btn-small btn-primary">Live Demo</a>
+                                        <a href="<%= project.liveLink %>" target="_blank" class="btn btn-small btn-primary"><%= isEn ? 'Live Demo' : 'Демо' %></a>
                                     <% } %>
                                 </div>
                             </div>
@@ -38,7 +41,7 @@
                     <% }); %>
                 <% } else { %>
                     <div class="empty-state">
-                        <p>No projects yet. Check back soon!</p>
+                        <p><%= isEn ? 'No projects yet. Check back soon!' : 'Проектов пока нет. Загляните позже.' %></p>
                     </div>
                 <% } %>
             </div>

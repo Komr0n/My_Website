@@ -1,0 +1,109 @@
+<%- include('partials/adminHeader') %>
+
+<div class="manage-container">
+    <div class="manage-header">
+        <h2>Backup Management</h2>
+    </div>
+
+    <% if (ok && message) { %>
+        <div style="margin-bottom: 1rem; padding: 0.75rem 1rem; border: 1px solid #1f8f5f; background: rgba(31, 143, 95, 0.12); border-radius: 8px; color: #8ff0c2;">
+            <%= message %>
+        </div>
+    <% } %>
+
+    <% if (error) { %>
+        <div style="margin-bottom: 1rem; padding: 0.75rem 1rem; border: 1px solid #8f2a2a; background: rgba(143, 42, 42, 0.14); border-radius: 8px; color: #ffb4b4;">
+            <%= error %>
+        </div>
+    <% } %>
+
+    <div class="dashboard-grid" style="margin-bottom: 2rem;">
+        <div class="dashboard-card">
+            <div class="card-info">
+                <h3><%= stats.about %></h3>
+                <p>About records</p>
+            </div>
+        </div>
+        <div class="dashboard-card">
+            <div class="card-info">
+                <h3><%= stats.projects %></h3>
+                <p>Projects</p>
+            </div>
+        </div>
+        <div class="dashboard-card">
+            <div class="card-info">
+                <h3><%= stats.certificates %></h3>
+                <p>Certificates</p>
+            </div>
+        </div>
+        <div class="dashboard-card">
+            <div class="card-info">
+                <h3><%= stats.posts %></h3>
+                <p>Posts</p>
+            </div>
+        </div>
+        <div class="dashboard-card">
+            <div class="card-info">
+                <h3><%= stats.tasks %></h3>
+                <p>Tasks</p>
+            </div>
+        </div>
+        <div class="dashboard-card">
+            <div class="card-info">
+                <h3><%= stats.media %></h3>
+                <p>Media records</p>
+            </div>
+        </div>
+        <div class="dashboard-card">
+            <div class="card-info">
+                <h3><%= stats.siteSettings %></h3>
+                <p>Site settings</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-container" style="margin-bottom: 1.5rem;">
+        <h3 style="margin-bottom: 0.75rem;">Export</h3>
+        <p style="margin-bottom: 1rem; color: #94a3b8;">
+            Download a JSON snapshot of content and settings.
+        </p>
+        <div class="form-actions">
+            <a href="/admin/backups/export" class="btn btn-primary">Download Backup JSON</a>
+            <a href="/admin/backups/export-package" class="btn btn-secondary">Download Backup ZIP (JSON + uploads)</a>
+        </div>
+    </div>
+
+    <div class="form-container" style="margin-bottom: 1.5rem;">
+        <h3 style="margin-bottom: 0.75rem;">Import JSON</h3>
+        <p style="margin-bottom: 1rem; color: #94a3b8;">
+            Import will replace existing content and settings with data from the backup file.
+        </p>
+        <form method="POST" action="/admin/backups/import" enctype="multipart/form-data" class="edit-form" data-confirm="Import will replace existing content and settings. Continue?">
+            <div class="form-group">
+                <label for="backupFile">Backup JSON File</label>
+                <input type="file" id="backupFile" name="backupFile" accept=".json,application/json" required>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-danger">Import Backup</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="form-container">
+        <h3 style="margin-bottom: 0.75rem;">Import ZIP Package</h3>
+        <p style="margin-bottom: 1rem; color: #94a3b8;">
+            ZIP import restores content/settings and fully replaces <code>public/uploads</code> files.
+        </p>
+        <form method="POST" action="/admin/backups/import-package" enctype="multipart/form-data" class="edit-form" data-confirm="ZIP import will replace existing content, settings, and uploads files. Continue?">
+            <div class="form-group">
+                <label for="backupZip">Backup ZIP File</label>
+                <input type="file" id="backupZip" name="backupZip" accept=".zip,application/zip" required>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-danger">Import ZIP Package</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<%- include('partials/adminFooter') %>

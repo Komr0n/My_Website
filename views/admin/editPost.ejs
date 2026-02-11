@@ -2,7 +2,7 @@
 
 <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-<style>
+<style nonce="<%= cspNonce %>">
 .ql-container {
     font-family: 'Fira Code', 'Roboto Mono', monospace;
     font-size: 14px;
@@ -187,14 +187,16 @@
         <div class="form-group">
             <label for="status">Status</label>
             <select id="status" name="status">
-                <option value="draft" <%= post && post.status === 'published' ? '' : 'selected' %>>Draft</option>
+                <option value="draft" <%= !post || post.status === 'draft' ? 'selected' : '' %>>Draft</option>
+                <option value="scheduled" <%= post && post.status === 'scheduled' ? 'selected' : '' %>>Scheduled</option>
                 <option value="published" <%= post && post.status === 'published' ? 'selected' : '' %>>Published</option>
             </select>
         </div>
 
         <div class="form-group">
-            <label for="publishedAt">Published Date</label>
+            <label for="publishedAt">Publish Date & Time</label>
             <input type="datetime-local" id="publishedAt" name="publishedAt" value="<%= publishedValue %>">
+            <small style="color: #8b949e; display: block; margin-top: 0.5rem;">For Scheduled status this must be a future date/time.</small>
         </div>
 
         <div class="form-group">
@@ -222,6 +224,13 @@
             </div>
             <button type="button" class="btn btn-secondary" id="add-section">+ Add Section</button>
             <input type="hidden" name="sections" id="sections-json">
+            <div class="form-group" id="fallback-container" style="margin-top: 1rem;">
+                <label for="fallbackContent">First Section Content (required)</label>
+                <textarea id="fallbackContent" name="fallbackContent" rows="8"><%- sections[0] ? sections[0].content : '' %></textarea>
+                <small style="color: #8b949e; display: block; margin-top: 0.5rem;">
+                    If the editor fails to load, use this field. It will be hidden when the editor is active.
+                </small>
+            </div>
         </div>
 
         <div class="form-actions">
@@ -251,10 +260,11 @@
     </div>
 </div>
 
-<script>
+<script nonce="<%= cspNonce %>">
 document.addEventListener('DOMContentLoaded', function() {
     var editors = [];
     var activeEditor = null;
+    var quillAvailable = typeof Quill === 'function';
 
     function createToolbar() {
         return [
@@ -327,11 +337,26 @@ document.addEventListener('DOMContentLoaded', function() {
         editors.push({ element: sectionEl, quill: quill });
     }
 
-    document.querySelectorAll('.post-section').forEach(function(sectionEl) {
-        initEditor(sectionEl);
-    });
+    if (quillAvailable) {
+        document.querySelectorAll('.post-section').forEach(function(sectionEl) {
+            initEditor(sectionEl);
+        });
+    }
+
+    var fallbackBox = document.getElementById('fallback-container');
+    var fallbackInput = document.getElementById('fallbackContent');
+    if (editors.length > 0 && fallbackBox) {
+        fallbackBox.style.display = 'none';
+    }
+    if (fallbackInput) {
+        fallbackInput.required = !quillAvailable;
+    }
 
     document.getElementById('add-section').addEventListener('click', function() {
+        if (!quillAvailable) {
+            alert('Editor is unavailable. Use the fallback content field below.');
+            return;
+        }
         var container = document.getElementById('sections-container');
         var index = container.children.length;
         var wrapper = document.createElement('div');
@@ -382,7 +407,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    var form = document.querySelector('form');
+    var form = document.querySelector('form.edit-form');
+    if (!form) {
+        return;
+    }
     form.addEventListener('submit', function() {
         var sections = [];
         document.querySelectorAll('.post-section').forEach(function(sectionEl) {
@@ -396,6 +424,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 sections.push({ title: title, content: content });
             }
         });
+        var fallback = document.getElementById('fallbackContent');
+        if (!sections.length && fallback && fallback.value.trim()) {
+            sections.push({ title: '', content: fallback.value });
+        }
+        if (sections.length && fallback) {
+            fallback.value = sections[0].content || fallback.value;
+        }
         document.getElementById('sections-json').value = JSON.stringify(sections);
     });
 });

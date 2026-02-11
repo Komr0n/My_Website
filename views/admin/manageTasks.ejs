@@ -5,7 +5,7 @@
         <h2>My Tasks</h2>
         <a href="/admin/tasks/new" class="btn btn-primary">+ Add Task</a>
     </div>
-    
+
     <div class="table-container">
         <table class="data-table">
             <thead>
@@ -22,15 +22,15 @@
                         <tr>
                             <td>
                                 <form action="/admin/tasks/<%= task.id %>/toggle?_method=PATCH" method="POST">
-                                    <input type="checkbox" class="task-checkbox" <%= task.completed ? 'checked' : '' %> onchange="this.form.submit()">
+                                    <input type="checkbox" class="task-checkbox" data-auto-submit="true" <%= task.completed ? 'checked' : '' %>>
                                 </form>
                             </td>
                             <td class="<%= task.completed ? 'task-completed' : '' %>"><%= task.title %></td>
                             <td class="<%= task.completed ? 'task-completed' : '' %>"><%= task.description || '-' %></td>
                             <td class="actions">
-                                <a href="/admin/tasks/<%= task.id %>/edit" class="btn btn-small">✏️ Edit</a>
-                                <form action="/admin/tasks/<%= task.id %>?_method=DELETE" method="POST" style="display: inline;">
-                                    <button type="submit" class="btn btn-small btn-danger" onclick="return confirm('Delete this task?')">🗑️ Delete</button>
+                                <a href="/admin/tasks/<%= task.id %>/edit" class="btn btn-small">Edit</a>
+                                <form action="/admin/tasks/<%= task.id %>?_method=DELETE" method="POST" style="display: inline;" data-confirm="Delete this task?">
+                                    <button type="submit" class="btn btn-small btn-danger">Delete</button>
                                 </form>
                             </td>
                         </tr>

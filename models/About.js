@@ -11,11 +11,23 @@ const About = sequelize.define('About', {
         type: DataTypes.STRING,
         defaultValue: 'About Me'
     },
+    titleEn: {
+        type: DataTypes.STRING,
+        defaultValue: 'About Me'
+    },
     content: {
         type: DataTypes.TEXT,
         defaultValue: 'System Administrator & Security Enthusiast'
     },
+    contentEn: {
+        type: DataTypes.TEXT,
+        defaultValue: 'System Administrator & Security Enthusiast'
+    },
     skills: {
+        type: DataTypes.TEXT,
+        defaultValue: 'RouterOS, Windows Server, Linux, Zabbix, Python, C#'
+    },
+    skillsEn: {
         type: DataTypes.TEXT,
         defaultValue: 'RouterOS, Windows Server, Linux, Zabbix, Python, C#'
     },

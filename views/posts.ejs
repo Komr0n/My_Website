@@ -13,11 +13,11 @@
                             <a href="/blog/<%= post.slug %>" class="post-link">
                                 <% if (post.coverImage || post.featuredImage) { %>
                                     <div class="project-image">
-                                        <img src="<%= post.coverImage || post.featuredImage %>" alt="<%= post.title %>">
+                                        <img src="<%= post.coverImage || post.featuredImage %>" alt="<%= post.title %>" loading="lazy" decoding="async">
                                     </div>
                                 <% } else { %>
                                     <div class="project-image" style="background: var(--bg-tertiary); display: flex; align-items: center; justify-content: center;">
-                                        <span style="color: var(--text-secondary); font-size: 3rem;">📝</span>
+                                        <span style="color: var(--text-secondary); font-size: 3rem;">&#128221;</span>
                                     </div>
                                 <% } %>
                                 <div class="project-content">
@@ -46,7 +46,7 @@
     
 </main>
 
-<style>
+<style nonce="<%= cspNonce %>">
 .post-card {
     cursor: pointer;
     transition: all 0.3s;
@@ -81,7 +81,4 @@
 </style>
 
 <%- include('partials/footer') %>
-
-
-
 

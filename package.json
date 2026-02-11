@@ -21,16 +21,25 @@
   "author": "Komron Juraev",
   "license": "ISC",
   "dependencies": {
+    "archiver": "^7.0.1",
     "bcrypt": "^6.0.0",
+    "compression": "^1.8.1",
+    "connect-pg-simple": "^10.0.0",
+    "csrf-sync": "^4.2.1",
     "dotenv": "^17.2.3",
     "ejs": "^4.0.1",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.2.1",
     "express-session": "^1.17.3",
+    "helmet": "^8.1.0",
     "method-override": "^3.0.0",
     "multer": "^2.0.2",
     "nodemailer": "^7.0.10",
     "pg": "^8.16.3",
-    "sequelize": "^6.35.0"
+    "sanitize-html": "^2.17.0",
+    "sequelize": "^6.35.0",
+    "sharp": "^0.34.5",
+    "unzipper": "^0.12.3"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"

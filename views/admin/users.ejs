@@ -1,0 +1,89 @@
+<%- include('partials/adminHeader') %>
+
+<div class="manage-container">
+    <div class="manage-header">
+        <h2>Manage Users</h2>
+    </div>
+
+    <form method="POST" action="/admin/users" class="upload-form">
+        <h3 style="margin-top:0;color:#00ff99;">Create User</h3>
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input id="username" name="username" type="text" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password (min 6)</label>
+            <input id="password" name="password" type="password" minlength="6" required>
+        </div>
+        <div class="form-group">
+            <label for="role">Role</label>
+            <select id="role" name="role">
+                <option value="editor">Editor</option>
+                <option value="admin">Admin</option>
+            </select>
+        </div>
+        <div class="form-actions">
+            <button class="btn btn-primary" type="submit">Create User</button>
+        </div>
+    </form>
+
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Role</th>
+                    <th>Created</th>
+                    <th>Role Update</th>
+                    <th>Password Reset</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (users && users.length > 0) { %>
+                    <% users.forEach(user => { %>
+                        <tr>
+                            <td><%= user.id %></td>
+                            <td><%= user.username %></td>
+                            <td><%= user.role %></td>
+                            <td><%= new Date(user.createdAt).toLocaleString('ru-RU') %></td>
+                            <td>
+                                <form method="POST" action="/admin/users/<%= user.id %>/role?_method=PUT" style="display:flex; gap:0.5rem; align-items:center;">
+                                    <select name="role" <%= Number(currentUserId) === Number(user.id) ? 'disabled' : '' %>>
+                                        <option value="editor" <%= user.role === 'editor' ? 'selected' : '' %>>Editor</option>
+                                        <option value="admin" <%= user.role === 'admin' ? 'selected' : '' %>>Admin</option>
+                                    </select>
+                                    <button class="btn btn-small" type="submit" <%= Number(currentUserId) === Number(user.id) ? 'disabled' : '' %>>Save</button>
+                                </form>
+                            </td>
+                            <td>
+                                <form method="POST" action="/admin/users/<%= user.id %>/password?_method=PUT" style="display:flex; gap:0.5rem; align-items:center;">
+                                    <input name="password" type="password" minlength="6" placeholder="new password" required>
+                                    <button class="btn btn-small" type="submit">Reset</button>
+                                </form>
+                            </td>
+                            <td>
+                                <form method="POST" action="/admin/users/<%= user.id %>?_method=DELETE" data-confirm="Delete user <%= user.username %>?">
+                                    <button
+                                        class="btn btn-small btn-danger"
+                                        type="submit"
+                                        <%= Number(currentUserId) === Number(user.id) ? 'disabled' : '' %>
+                                    >
+                                        Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="7" class="text-center">No users yet.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<%- include('partials/adminFooter') %>

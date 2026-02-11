@@ -11,13 +11,28 @@ const Project = sequelize.define('Project', {
         type: DataTypes.STRING,
         allowNull: false
     },
+    titleEn: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: ''
+    },
     description: {
         type: DataTypes.TEXT,
         allowNull: false
     },
+    descriptionEn: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        defaultValue: ''
+    },
     technologies: {
         type: DataTypes.TEXT,
         allowNull: false
+    },
+    technologiesEn: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        defaultValue: ''
     },
     image: {
         type: DataTypes.STRING,

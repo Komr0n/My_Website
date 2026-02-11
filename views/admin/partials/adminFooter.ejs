@@ -1,7 +1,80 @@
             </div>
         </main>
     </div>
-    <script src="/js/admin.js"></script>
+    <script nonce="<%= cspNonce %>">
+    window.__CSRF_TOKEN = '<%= csrfToken %>';
+    (function() {
+        function ensureFormToken(form) {
+            if (!form) {
+                return;
+            }
+            var method = (form.getAttribute('method') || 'GET').toUpperCase();
+            if (method === 'GET') {
+                return;
+            }
+            if (form.querySelector('input[name=\"_csrf\"]')) {
+                return;
+            }
+            var tokenInput = document.createElement('input');
+            tokenInput.type = 'hidden';
+            tokenInput.name = '_csrf';
+            tokenInput.value = window.__CSRF_TOKEN;
+            form.appendChild(tokenInput);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('form').forEach(ensureFormToken);
+
+            document.querySelectorAll('form[data-confirm]').forEach(function(form) {
+                form.addEventListener('submit', function(event) {
+                    var message = form.getAttribute('data-confirm') || 'Are you sure?';
+                    if (!window.confirm(message)) {
+                        event.preventDefault();
+                    }
+                });
+            });
+
+            document.querySelectorAll('[data-toggle-target]').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var targetId = btn.getAttribute('data-toggle-target');
+                    var action = btn.getAttribute('data-toggle-action');
+                    var target = document.getElementById(targetId);
+                    if (!target) {
+                        return;
+                    }
+                    if (action === 'show') {
+                        target.style.display = 'block';
+                    } else if (action === 'hide') {
+                        target.style.display = 'none';
+                    }
+                });
+            });
+
+            document.querySelectorAll('[data-auto-submit=\"true\"]').forEach(function(input) {
+                input.addEventListener('change', function() {
+                    if (input.form) {
+                        input.form.requestSubmit();
+                    }
+                });
+            });
+        });
+
+        var originalFetch = window.fetch;
+        window.fetch = function(resource, options) {
+            var nextOptions = options ? Object.assign({}, options) : {};
+            nextOptions.method = (nextOptions.method || 'GET').toUpperCase();
+            if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(nextOptions.method)) {
+                var headers = new Headers(nextOptions.headers || {});
+                if (!headers.has('CSRF-Token')) {
+                    headers.set('CSRF-Token', window.__CSRF_TOKEN);
+                }
+                nextOptions.headers = headers;
+            }
+            return originalFetch(resource, nextOptions);
+        };
+    })();
+    </script>
+    <script nonce="<%= cspNonce %>" src="/js/admin.js"></script>
 </body>
 </html>
 

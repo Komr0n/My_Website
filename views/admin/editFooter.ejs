@@ -1,0 +1,47 @@
+<%- include('partials/adminHeader') %>
+
+<div class="form-container">
+    <form method="POST" action="/admin/footer?_method=PUT" class="edit-form">
+        <div class="form-group">
+            <label for="brandTitle">Footer Brand Title</label>
+            <input type="text" id="brandTitle" name="brandTitle" value="<%= footer.brandTitle %>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="brandDescription">Footer Brand Description</label>
+            <input type="text" id="brandDescription" name="brandDescription" value="<%= footer.brandDescription %>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="quickLinks">Quick Links (format: Label|URL, one per line)</label>
+            <textarea id="quickLinks" name="quickLinks" rows="6" required><%= quickLinksText %></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="socialLinks">Social Links (format: Label|URL, one per line)</label>
+            <textarea id="socialLinks" name="socialLinks" rows="6" required><%= socialLinksText %></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="copyrightYear">Copyright Year</label>
+            <input type="number" id="copyrightYear" name="copyrightYear" min="1990" max="2100" value="<%= footer.copyrightYear %>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="copyrightName">Copyright Name</label>
+            <input type="text" id="copyrightName" name="copyrightName" value="<%= footer.copyrightName %>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="copyrightText">Copyright Text</label>
+            <input type="text" id="copyrightText" name="copyrightText" value="<%= footer.copyrightText %>" required>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save Footer Settings</button>
+            <a href="/admin" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<%- include('partials/adminFooter') %>

@@ -1,0 +1,62 @@
+<%- include('partials/adminHeader') %>
+
+<div class="form-container" style="max-width: 980px;">
+    <form method="POST" action="/admin/seo?_method=PUT" class="edit-form">
+        <% const labels = {
+            home: 'Home',
+            about: 'About',
+            projects: 'Projects',
+            certificates: 'Certificates',
+            contact: 'Contact',
+            blog: 'Blog List',
+            blogPost: 'Blog Post'
+        }; %>
+
+        <% pages.forEach(page => { const current = seo[page] || {}; %>
+            <div class="post-section">
+                <div class="section-header">
+                    <h3><%= labels[page] || page %></h3>
+                </div>
+
+                <div class="form-group">
+                    <label for="<%= page %>_metaTitle">Meta Title</label>
+                    <input
+                        type="text"
+                        id="<%= page %>_metaTitle"
+                        name="<%= page %>_metaTitle"
+                        value="<%= current.metaTitle || '' %>"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="<%= page %>_metaDescription">Meta Description</label>
+                    <textarea
+                        id="<%= page %>_metaDescription"
+                        name="<%= page %>_metaDescription"
+                        rows="3"
+                        required
+                    ><%= current.metaDescription || '' %></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="<%= page %>_ogImage">OG Image URL</label>
+                    <input
+                        type="text"
+                        id="<%= page %>_ogImage"
+                        name="<%= page %>_ogImage"
+                        value="<%= current.ogImage || '' %>"
+                        placeholder="/images/your-image.png"
+                    >
+                </div>
+            </div>
+        <% }) %>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save SEO Settings</button>
+            <a href="/admin" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<%- include('partials/adminFooter') %>

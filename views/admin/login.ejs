@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/css/admin.css">
 </head>
 <body class="login-body">
-    <div class="login-container">
+    <div class="login-container" style="max-width: 720px;">
         <div class="login-box">
             <div class="login-header">
                 <h1>$ Admin Login</h1>
@@ -16,11 +16,12 @@
             
             <% if (typeof error !== 'undefined' && error) { %>
                 <div class="alert alert-error">
-                    <p>✗ <%= error %></p>
+                    <p><%= error %></p>
                 </div>
             <% } %>
             
             <form class="login-form" method="POST" action="/auth/admin/login">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                 <div class="form-group">
                     <label for="username">Username</label>
                     <input type="text" id="username" name="username" required autofocus>
@@ -34,14 +35,19 @@
                 <button type="submit" class="btn btn-primary">Login</button>
             </form>
             
-            <div class="login-footer">
-                <p>Default credentials: admin / admin123</p>
+            <div class="login-footer" style="text-align:left;">
+                <p><strong>If there is no admin account</strong></p>
+                <p>For users with DB access, create a super admin manually:</p>
+                <ol style="margin-left:1.2rem; color:#8b949e;">
+                    <li>Generate bcrypt hash in project folder:
+                        <code>node -e "console.log(require('bcrypt').hashSync('YOUR_STRONG_PASSWORD', 10))"</code>
+                    </li>
+                    <li>Insert user in PostgreSQL:
+                        <code>INSERT INTO "Users" ("username","password","role","createdAt","updatedAt") VALUES ('superadmin','PASTE_HASH_HERE','admin',NOW(),NOW());</code>
+                    </li>
+                </ol>
             </div>
         </div>
     </div>
 </body>
 </html>
-
-
-
-

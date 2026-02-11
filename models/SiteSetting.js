@@ -1,27 +1,21 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/database');
 
-const User = sequelize.define('User', {
+const SiteSetting = sequelize.define('SiteSetting', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
-    username: {
+    key: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true
     },
-    password: {
-        type: DataTypes.STRING,
+    value: {
+        type: DataTypes.TEXT,
         allowNull: false
-    },
-    role: {
-        type: DataTypes.STRING,
-        defaultValue: 'editor'
     }
 });
 
-module.exports = User;
-
-
+module.exports = SiteSetting;

@@ -11,24 +11,35 @@
         <aside class="admin-sidebar">
             <div class="sidebar-header">
                 <h2>$ Admin</h2>
-                <span class="admin-user">user@system:~$</span>
+                <span class="admin-user">
+                    <%= authUser ? `${authUser.username} (${authUser.role})` : 'user@system:~$' %>
+                </span>
             </div>
             <nav class="sidebar-nav">
                 <ul>
-                    <li><a href="/admin" class="nav-link">📊 Dashboard</a></li>
-                    <li><a href="/admin/about" class="nav-link">👤 About</a></li>
-                    <li><a href="/admin/projects" class="nav-link">📁 Projects</a></li>
-                    <li><a href="/admin/certificates" class="nav-link">🏆 Certificates</a></li>
-                    <li><a href="/admin/posts" class="nav-link">📝 Posts</a></li>
+                    <li><a href="/admin" class="nav-link">Dashboard</a></li>
+                    <li><a href="/admin/about" class="nav-link">About</a></li>
+                    <% if (authUser && authUser.role === 'admin') { %>
+                        <li><a href="/admin/home" class="nav-link">Home Page</a></li>
+                        <li><a href="/admin/contact-page" class="nav-link">Contact Page</a></li>
+                        <li><a href="/admin/navigation" class="nav-link">Navigation</a></li>
+                        <li><a href="/admin/seo" class="nav-link">SEO</a></li>
+                        <li><a href="/admin/backups" class="nav-link">Backups</a></li>
+                    <% } %>
+                    <li><a href="/admin/projects" class="nav-link">Projects</a></li>
+                    <li><a href="/admin/certificates" class="nav-link">Certificates</a></li>
+                    <li><a href="/admin/posts" class="nav-link">Posts</a></li>
                     <li><a href="/admin/media" class="nav-link">Media</a></li>
-                    <li><a href="/admin/tasks" class="nav-link">✅ Tasks</a></li>
-                    <li><a href="/admin/messages" class="nav-link">💬 Messages</a></li>
-                    <li><a href="/" class="nav-link" target="_blank">🌐 View Site</a></li>
-                    <li>
-                        <form action="/auth/admin/logout" method="POST">
-                            <button type="submit" class="nav-link logout-btn">🚪 Logout</button>
-                        </form>
-                    </li>
+                    <% if (authUser && authUser.role === 'admin') { %>
+                        <li><a href="/admin/footer" class="nav-link">Footer</a></li>
+                    <% } %>
+                    <li><a href="/admin/tasks" class="nav-link">Tasks</a></li>
+                    <% if (authUser && authUser.role === 'admin') { %>
+                        <li><a href="/admin/messages" class="nav-link">Messages</a></li>
+                        <li><a href="/admin/audit" class="nav-link">Audit Logs</a></li>
+                        <li><a href="/admin/users" class="nav-link">Users</a></li>
+                    <% } %>
+                    <li><a href="/" class="nav-link" target="_blank">View Site</a></li>
                 </ul>
             </nav>
         </aside>
@@ -36,9 +47,10 @@
         <main class="admin-main">
             <header class="admin-header">
                 <h1><%= typeof title !== 'undefined' ? title : 'Admin Panel' %></h1>
+                <% if (authUser) { %>
+                    <form action="/auth/admin/logout" method="POST">
+                        <button type="submit" class="btn btn-small btn-secondary">Logout</button>
+                    </form>
+                <% } %>
             </header>
             <div class="admin-content">
-
-
-
-

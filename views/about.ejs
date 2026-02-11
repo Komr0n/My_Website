@@ -1,11 +1,12 @@
 <%- include('partials/header') %>
+<% const isEn = currentLang === 'en'; %>
 
 <main class="page-container">
     <div class="container">
         <section class="about-section">
             <div class="about-header">
                 <div class="about-avatar">
-                    <img src="<%= about.avatar %>" alt="<%= about.title %>" class="avatar-image">
+                    <img src="<%= about.avatar %>" alt="<%= about.title %>" class="avatar-image" width="200" height="200" decoding="async" fetchpriority="high">
                 </div>
                 <h1><%= about.title %></h1>
                 <h2 class="subtitle"><%= about.content %></h2>
@@ -13,11 +14,13 @@
             
             <div class="about-content">
                 <div class="about-text">
-                    <p>Experienced System Administrator specializing in network infrastructure, information security, and automation. Passionate about building robust, secure, and efficient IT systems.</p>
+                    <p><%= isEn
+                        ? 'Experienced System Administrator specializing in network infrastructure, information security, and automation. Passionate about building robust, secure, and efficient IT systems.'
+                        : 'Опытный системный администратор, специализирующийся на сетевой инфраструктуре, информационной безопасности и автоматизации. Строю надежные и эффективные ИТ-системы.' %></p>
                 </div>
                 
                 <div class="skills-section">
-                    <h3>Skills & Technologies</h3>
+                    <h3><%= isEn ? 'Skills & Technologies' : 'Навыки и технологии' %></h3>
                     <div class="skills-grid">
                         <% const skills = about.skills.split(',').map(s => s.trim()); %>
                         <% skills.forEach(skill => { %>

@@ -1,6 +1,30 @@
 // Main JavaScript for public site
 
 document.addEventListener('DOMContentLoaded', function() {
+    const navToggle = document.getElementById('navToggle');
+    const navMenu = document.getElementById('navMenu');
+
+    if (navToggle && navMenu) {
+        navToggle.addEventListener('click', () => {
+            const isOpen = navMenu.classList.toggle('is-open');
+            navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+
+        navMenu.querySelectorAll('a').forEach((link) => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('is-open');
+                navToggle.setAttribute('aria-expanded', 'false');
+            });
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                navMenu.classList.remove('is-open');
+                navToggle.setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
+
     // Theme toggle (light/dark)
     const themeToggle = document.getElementById('themeToggle');
     const userPref = localStorage.getItem('theme') || 'dark';
@@ -34,21 +58,25 @@ document.addEventListener('DOMContentLoaded', function() {
         rootMargin: '0px 0px -50px 0px'
     };
 
-    const observer = new IntersectionObserver(function(entries) {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-            }
-        });
-    }, observerOptions);
+    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduceMotion && 'IntersectionObserver' in window) {
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
 
-    document.querySelectorAll('.project-card, .certificate-card').forEach(el => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(20px)';
-        el.style.transition = 'opacity 0.6s, transform 0.6s';
-        observer.observe(el);
-    });
+        document.querySelectorAll('.project-card, .certificate-card').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s, transform 0.6s';
+            observer.observe(el);
+        });
+    }
 
     // Form validation
     const forms = document.querySelectorAll('form');
@@ -79,16 +107,15 @@ function setTheme(mode) {
         document.documentElement.dataset.theme = 'light';
         const themeToggle = document.getElementById('themeToggle');
         if (themeToggle) {
-            themeToggle.textContent = '☀';
+            themeToggle.textContent = '\u2600';
             themeToggle.title = 'Switch to dark mode';
         }
     } else {
         document.documentElement.dataset.theme = 'dark';
         const themeToggle = document.getElementById('themeToggle');
         if (themeToggle) {
-            themeToggle.textContent = '☾';
+            themeToggle.textContent = '\u263E';
             themeToggle.title = 'Switch to light mode';
         }
     }
 }
-

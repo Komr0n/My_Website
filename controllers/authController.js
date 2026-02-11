@@ -30,10 +30,16 @@ exports.login = async (req, res) => {
             });
         }
         
-        req.session.userId = user.id;
-        req.session.username = user.username;
-        
-        res.redirect('/admin');
+        req.session.regenerate((regenerateError) => {
+            if (regenerateError) {
+                console.error(regenerateError);
+                return res.status(500).send('Login error');
+            }
+            req.session.userId = user.id;
+            req.session.username = user.username;
+            req.session.role = user.role || 'editor';
+            return res.redirect('/admin');
+        });
     } catch (error) {
         console.error(error);
         res.status(500).send('Login error');
@@ -42,7 +48,8 @@ exports.login = async (req, res) => {
 
 exports.logout = (req, res) => {
     req.session.destroy(() => {
-        res.redirect('/admin/login');
+        res.clearCookie(process.env.SESSION_COOKIE_NAME || 'sid');
+        res.redirect('/auth/admin/login');
     });
 };
 

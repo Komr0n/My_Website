@@ -3,13 +3,23 @@
 <div class="form-container">
     <form method="POST" action="/admin/about?_method=PUT" enctype="multipart/form-data" class="edit-form">
         <div class="form-group">
-            <label for="title">Title</label>
+            <label for="title">Title (RU)</label>
             <input type="text" id="title" name="title" value="<%= about.title %>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="titleEn">Title (EN)</label>
+            <input type="text" id="titleEn" name="titleEn" value="<%= about.titleEn || '' %>" required>
         </div>
         
         <div class="form-group">
-            <label for="content">Subtitle/Content</label>
+            <label for="content">Subtitle/Content (RU)</label>
             <input type="text" id="content" name="content" value="<%= about.content %>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="contentEn">Subtitle/Content (EN)</label>
+            <input type="text" id="contentEn" name="contentEn" value="<%= about.contentEn || '' %>" required>
         </div>
         
         <div class="form-group">
@@ -24,8 +34,13 @@
         </div>
         
         <div class="form-group">
-            <label for="skills">Skills (comma-separated)</label>
+            <label for="skills">Skills (RU, comma-separated)</label>
             <textarea id="skills" name="skills" rows="3" required><%= about.skills %></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="skillsEn">Skills (EN, comma-separated)</label>
+            <textarea id="skillsEn" name="skillsEn" rows="3" required><%= about.skillsEn || '' %></textarea>
         </div>
         
         <div class="form-actions">

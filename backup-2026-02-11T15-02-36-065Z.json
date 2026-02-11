@@ -1,0 +1,107 @@
+{
+  "format": "digital-sysadmin-backup",
+  "version": 1,
+  "generatedAt": "2026-02-11T15:02:36.064Z",
+  "data": {
+    "about": [
+      {
+        "id": 1,
+        "title": "Komron Juraev",
+        "titleEn": "Komron Juraev",
+        "content": "System & Network Administrator",
+        "contentEn": "System & Network Administrator",
+        "skills": "Cisco, RouterOS, Windows Server, Linux, Zabbix, Python, C#, C++, C",
+        "skillsEn": "Cisco, RouterOS, Windows Server, Linux, Zabbix, Python, C#, C++, C",
+        "avatar": "/uploads/avatars/avatar-1770804366242.jpg",
+        "createdAt": "2026-01-29T15:44:16.640Z",
+        "updatedAt": "2026-02-11T10:08:00.629Z"
+      }
+    ],
+    "projects": [],
+    "certificates": [],
+    "posts": [
+      {
+        "id": 1,
+        "title": "sef",
+        "subtitle": "w3ef",
+        "content": "<p>awefazed<img src=\"/uploads/media/media-1769701707430.png\">svzrsedvzce</p>",
+        "sections": "[{\"title\":\"wae\",\"content\":\"<p>awefazed<img src=\\\"/uploads/media/media-1769701707430.png\\\">svzrsedvzce</p>\"}]",
+        "excerpt": "sec",
+        "status": "published",
+        "publishedAt": "2026-02-11T10:03:00.000Z",
+        "slug": "sef",
+        "coverImage": "/uploads/posts/post-1770804255173.jpg",
+        "featuredImage": "/uploads/posts/post-1770804255173.jpg",
+        "createdAt": "2026-02-11T10:04:15.181Z",
+        "updatedAt": "2026-02-11T10:04:15.181Z"
+      },
+      {
+        "id": 2,
+        "title": "ef",
+        "subtitle": "esf",
+        "content": "<p>aewds</p>",
+        "sections": "[{\"title\":\"er\",\"content\":\"<p>aewds</p>\"}]",
+        "excerpt": "sed",
+        "status": "scheduled",
+        "publishedAt": "2026-02-13T13:40:00.000Z",
+        "slug": "ef",
+        "coverImage": "/uploads/posts/post-1770806430856.JPG",
+        "featuredImage": "/uploads/posts/post-1770806430856.JPG",
+        "createdAt": "2026-02-11T10:40:30.938Z",
+        "updatedAt": "2026-02-11T10:40:30.938Z"
+      }
+    ],
+    "tasks": [
+      {
+        "id": 1,
+        "title": "wef",
+        "description": "awefs",
+        "completed": false,
+        "createdAt": "2026-02-11T09:46:08.169Z",
+        "updatedAt": "2026-02-11T09:46:08.169Z"
+      },
+      {
+        "id": 2,
+        "title": "awef",
+        "description": "awef",
+        "completed": false,
+        "createdAt": "2026-02-11T09:46:11.401Z",
+        "updatedAt": "2026-02-11T09:46:11.401Z"
+      }
+    ],
+    "media": [
+      {
+        "id": 1,
+        "filename": "media-1769701697641.png",
+        "originalName": "Ð¡Ð½Ð¸Ð¼Ð¾Ðº ÑÐºÑÐ°Ð½Ð° (1).png",
+        "url": "/uploads/media/media-1769701697641.png",
+        "createdAt": "2026-01-29T15:48:17.645Z",
+        "updatedAt": "2026-01-29T15:48:17.645Z"
+      },
+      {
+        "id": 2,
+        "filename": "media-1769701707430.png",
+        "originalName": "Ð¡Ð½Ð¸Ð¼Ð¾Ðº ÑÐºÑÐ°Ð½Ð° (2).png",
+        "url": "/uploads/media/media-1769701707430.png",
+        "createdAt": "2026-01-29T15:48:27.433Z",
+        "updatedAt": "2026-01-29T15:48:27.433Z"
+      }
+    ],
+    "siteSettings": [
+      {
+        "id": 1,
+        "key": "home",
+        "value": "{\"heroTitle\":\"Komron Juraev - System & Network Administrator\",\"heroDescription\":\"Networking | Automation | VibeCodding\",\"terminalCommands\":[\"systemctl status network\",\"cat /etc/hostname\",\"ping -c 4 8.8.8.8\",\"ls -la /opt\",\"ps aux | grep nginx\",\"whoami && pwd\"],\"buttons\":{\"about\":\"About Me\",\"projects\":\"View Projects\",\"certificates\":\"Certificates\",\"contact\":\"Contact\"}}",
+        "createdAt": "2026-02-11T10:23:42.356Z",
+        "updatedAt": "2026-02-11T10:23:42.356Z"
+      },
+      {
+        "id": 2,
+        "key": "footer",
+        "value": "{\"brandTitle\":\"Digital SysAdmin\",\"brandDescription\":\"System & Network Administrator\",\"quickLinks\":[{\"label\":\"Home\",\"url\":\"/\"},{\"label\":\"About\",\"url\":\"/about\"},{\"label\":\"Projects\",\"url\":\"/projects\"},{\"label\":\"Certificates\",\"url\":\"/certificates\"}],\"socialLinks\":[{\"label\":\"Telegram\",\"url\":\"https://t.me/Komron0102\"},{\"label\":\"GitHub\",\"url\":\"https://github.com/komr0n\"},{\"label\":\"LinkedIn\",\"url\":\"https://linkedin.com/in/komron\"}],\"copyrightYear\":2026,\"copyrightName\":\"Komron Juraev\",\"copyrightText\":\"All rights reserved.\"}",
+        "createdAt": "2026-02-11T10:25:06.802Z",
+        "updatedAt": "2026-02-11T10:28:58.107Z"
+      }
+    ]
+  }
+}

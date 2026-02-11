@@ -1,14 +1,52 @@
 <%- include('partials/adminHeader') %>
 
+<style nonce="<%= cspNonce %>">
+.drop-zone {
+    border: 2px dashed #21262d;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    color: #8b949e;
+    background: #161b22;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.drop-zone.dragover {
+    border-color: #00ff99;
+    color: #00ff99;
+    box-shadow: 0 0 0 3px rgba(0, 255, 153, 0.12);
+}
+
+.drop-zone strong {
+    color: #c9d1d9;
+    display: block;
+    margin-bottom: 0.4rem;
+}
+
+.upload-hint {
+    margin-top: 0.6rem;
+    font-size: 0.9rem;
+}
+</style>
+
 <div class="manage-container">
     <div class="manage-header">
         <h2>Media Library</h2>
     </div>
 
-    <form action="/admin/media" method="POST" enctype="multipart/form-data" class="upload-form">
+    <form action="/admin/media" method="POST" enctype="multipart/form-data" class="upload-form" id="media-upload-form">
         <div class="form-group">
             <label for="media">Upload Image</label>
-            <input type="file" id="media" name="media" accept="image/*" required>
+            <input type="file" id="media" name="media" accept="image/*,.webp,.avif" required style="display:none;">
+            <div id="drop-zone" class="drop-zone" role="button" tabindex="0" aria-label="Drop image here or click to select">
+                <strong>Drop image here</strong>
+                <span>or click to choose a file</span>
+                <div class="upload-hint" id="selected-file">No file selected</div>
+            </div>
+            <small style="color: #8b949e; display:block; margin-top:0.6rem;">
+                Images are optimized on upload and converted to WebP by default.
+            </small>
         </div>
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">Upload</button>
@@ -23,8 +61,8 @@
                         <img src="<%= item.url %>" alt="<%= item.originalName %>">
                         <div class="media-item-footer">
                             <span class="media-url"><%= item.originalName %></span>
-                            <form action="/admin/media/<%= item.id %>?_method=DELETE" method="POST">
-                                <button type="submit" class="btn btn-small btn-danger" onclick="return confirm('Delete this file?')">Delete</button>
+                            <form action="/admin/media/<%= item.id %>?_method=DELETE" method="POST" data-confirm="Delete this file?">
+                                <button type="submit" class="btn btn-small btn-danger">Delete</button>
                             </form>
                         </div>
                     </div>
@@ -35,5 +73,70 @@
         <% } %>
     </div>
 </div>
+
+<script nonce="<%= cspNonce %>">
+document.addEventListener('DOMContentLoaded', function () {
+    var input = document.getElementById('media');
+    var zone = document.getElementById('drop-zone');
+    var fileLabel = document.getElementById('selected-file');
+
+    if (!input || !zone) {
+        return;
+    }
+
+    function updateLabel(file) {
+        fileLabel.textContent = file ? ('Selected: ' + file.name) : 'No file selected';
+    }
+
+    function setFile(file) {
+        if (!file) {
+            return;
+        }
+        var dt = new DataTransfer();
+        dt.items.add(file);
+        input.files = dt.files;
+        updateLabel(file);
+    }
+
+    zone.addEventListener('click', function () {
+        input.click();
+    });
+
+    zone.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            input.click();
+        }
+    });
+
+    input.addEventListener('change', function () {
+        updateLabel(input.files && input.files[0] ? input.files[0] : null);
+    });
+
+    ['dragenter', 'dragover'].forEach(function (eventName) {
+        zone.addEventListener(eventName, function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            zone.classList.add('dragover');
+        });
+    });
+
+    ['dragleave', 'dragend', 'drop'].forEach(function (eventName) {
+        zone.addEventListener(eventName, function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            zone.classList.remove('dragover');
+        });
+    });
+
+    zone.addEventListener('drop', function (event) {
+        var files = event.dataTransfer && event.dataTransfer.files ? event.dataTransfer.files : null;
+        if (!files || !files.length) {
+            return;
+        }
+        setFile(files[0]);
+    });
+});
+</script>
 
 <%- include('partials/adminFooter') %>

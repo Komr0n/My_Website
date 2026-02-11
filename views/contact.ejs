@@ -1,55 +1,79 @@
 <%- include('partials/header') %>
+<%
+const contactSettings = (siteSettings && siteSettings.contact) ? siteSettings.contact : {};
+const isEn = currentLang === 'en';
+
+const pickText = (ruKey, enKey, legacyKey, ruFallback, enFallback) => {
+    if (isEn) {
+        return contactSettings[enKey] || contactSettings[legacyKey] || enFallback;
+    }
+    return contactSettings[ruKey] || contactSettings[legacyKey] || ruFallback;
+};
+
+const pageTitle = pickText('titleRu', 'titleEn', 'title', 'Свяжитесь со мной', 'Get In Touch');
+const pageDescription = pickText('descriptionRu', 'descriptionEn', 'description', 'Есть вопрос или предложение по сотрудничеству? Напишите мне.', "Have a question or want to work together? Let's connect!");
+const infoTitle = pickText('infoTitleRu', 'infoTitleEn', 'infoTitle', 'Контактная информация', 'Contact Information');
+const emailLabel = pickText('emailLabelRu', 'emailLabelEn', 'emailLabel', 'Почта', 'Email');
+const telegramLabel = pickText('telegramLabelRu', 'telegramLabelEn', 'telegramLabel', 'Telegram', 'Telegram');
+const linkedinLabel = pickText('linkedinLabelRu', 'linkedinLabelEn', 'linkedinLabel', 'LinkedIn', 'LinkedIn');
+const githubLabel = pickText('githubLabelRu', 'githubLabelEn', 'githubLabel', 'GitHub', 'GitHub');
+const formNameLabel = pickText('formNameLabelRu', 'formNameLabelEn', 'formNameLabel', 'Имя', 'Name');
+const formEmailLabel = pickText('formEmailLabelRu', 'formEmailLabelEn', 'formEmailLabel', 'Почта', 'Email');
+const formMessageLabel = pickText('formMessageLabelRu', 'formMessageLabelEn', 'formMessageLabel', 'Сообщение', 'Message');
+const submitLabel = pickText('submitLabelRu', 'submitLabelEn', 'submitLabel', 'Отправить сообщение', 'Send Message');
+const successMessage = pickText('successMessageRu', 'successMessageEn', 'successMessage', 'Сообщение успешно отправлено! Я скоро отвечу.', "Message sent successfully! I'll get back to you soon.");
+%>
 
 <main class="page-container">
     <div class="container">
         <section class="contact-section">
-            <h1>Get In Touch</h1>
-            <p class="section-description">Have a question or want to work together? Let's connect!</p>
-            
+            <h1><%= pageTitle %></h1>
+            <p class="section-description"><%= pageDescription %></p>
+
             <% if (typeof query !== 'undefined' && query.success === 'true') { %>
                 <div class="alert alert-success">
-                    <p>вњ“ Message sent successfully! I'll get back to you soon.</p>
+                    <p>&#10003; <%= successMessage %></p>
                 </div>
             <% } %>
-            
+
             <div class="contact-container">
                 <div class="contact-info">
-                    <h3>Contact Information</h3>
+                    <h3><%= infoTitle %></h3>
                     <div class="contact-item">
-                        <span class="contact-icon">рџ“§</span>
-                        <a href="mailto:komron@example.com">komron@example.com</a>
+                        <span class="contact-icon">&#9993;</span>
+                        <a href="mailto:<%= contactSettings.emailValue || 'komron@example.com' %>"><%= emailLabel %>: <%= contactSettings.emailValue || 'komron@example.com' %></a>
                     </div>
                     <div class="contact-item">
-                        <span class="contact-icon">рџ’¬</span>
-                        <a href="https://t.me/komron" target="_blank">Telegram</a>
+                        <span class="contact-icon">&#128172;</span>
+                        <a href="<%= contactSettings.telegramUrl || 'https://t.me/komron' %>" target="_blank" rel="noopener noreferrer"><%= telegramLabel %></a>
                     </div>
                     <div class="contact-item">
-                        <span class="contact-icon">рџ’ј</span>
-                        <a href="https://linkedin.com/in/komron" target="_blank">LinkedIn</a>
+                        <span class="contact-icon">&#128188;</span>
+                        <a href="<%= contactSettings.linkedinUrl || 'https://linkedin.com/in/komron' %>" target="_blank" rel="noopener noreferrer"><%= linkedinLabel %></a>
                     </div>
                     <div class="contact-item">
-                        <span class="contact-icon">рџђ™</span>
-                        <a href="https://github.com/komron" target="_blank">GitHub</a>
+                        <span class="contact-icon">&#128187;</span>
+                        <a href="<%= contactSettings.githubUrl || 'https://github.com/komron' %>" target="_blank" rel="noopener noreferrer"><%= githubLabel %></a>
                     </div>
                 </div>
-                
+
                 <form class="contact-form" method="POST" action="/contact/submit">
                     <div class="form-group">
-                        <label for="name">Name</label>
+                        <label for="name"><%= formNameLabel %></label>
                         <input type="text" id="name" name="name" required>
                     </div>
-                    
+
                     <div class="form-group">
-                        <label for="email">Email</label>
+                        <label for="email"><%= formEmailLabel %></label>
                         <input type="email" id="email" name="email" required>
                     </div>
-                    
+
                     <div class="form-group">
-                        <label for="message">Message</label>
+                        <label for="message"><%= formMessageLabel %></label>
                         <textarea id="message" name="message" rows="6" required></textarea>
                     </div>
-                    
-                    <button type="submit" class="btn btn-primary">Send Message</button>
+
+                    <button type="submit" class="btn btn-primary"><%= submitLabel %></button>
                 </form>
             </div>
         </section>
@@ -57,7 +81,3 @@
 </main>
 
 <%- include('partials/footer') %>
-
-
-
-

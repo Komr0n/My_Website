@@ -5,7 +5,7 @@
         <h2>Manage Posts</h2>
         <a href="/admin/posts/new" class="btn btn-primary">+ Create Post</a>
     </div>
-    
+
     <div class="table-container">
         <table class="data-table">
             <thead>
@@ -23,14 +23,12 @@
                         <tr>
                             <td><%= post.id %></td>
                             <td><%= post.title %></td>
-                            <td><%= post.status === 'published' ? 'Published' : 'Draft' %></td>
-                            <td>
-                                <%= post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' }) : '-' %>
-                            </td>
+                            <td><%= post.status === 'published' ? 'Published' : (post.status === 'scheduled' ? 'Scheduled' : 'Draft') %></td>
+                            <td><%= post.publishedAt ? new Date(post.publishedAt).toLocaleString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '-' %></td>
                             <td class="actions">
-                                <a href="/admin/posts/<%= post.id %>/edit" class="btn btn-small">✏️ Edit</a>
-                                <form action="/admin/posts/<%= post.id %>?_method=DELETE" method="POST" style="display: inline;">
-                                    <button type="submit" class="btn btn-small btn-danger" onclick="return confirm('Are you sure?')">🗑️ Delete</button>
+                                <a href="/admin/posts/<%= post.id %>/edit" class="btn btn-small">Edit</a>
+                                <form action="/admin/posts/<%= post.id %>?_method=DELETE" method="POST" style="display: inline;" data-confirm="Are you sure?">
+                                    <button type="submit" class="btn btn-small btn-danger">Delete</button>
                                 </form>
                             </td>
                         </tr>
@@ -46,7 +44,3 @@
 </div>
 
 <%- include('partials/adminFooter') %>
-
-
-
-

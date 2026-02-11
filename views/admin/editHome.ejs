@@ -1,0 +1,47 @@
+<%- include('partials/adminHeader') %>
+
+<div class="form-container">
+    <form method="POST" action="/admin/home?_method=PUT" class="edit-form">
+        <div class="form-group">
+            <label for="heroTitle">Hero Title</label>
+            <input type="text" id="heroTitle" name="heroTitle" value="<%= home.heroTitle %>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="heroDescription">Hero Description</label>
+            <input type="text" id="heroDescription" name="heroDescription" value="<%= home.heroDescription %>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="terminalCommands">Terminal Commands (one per line)</label>
+            <textarea id="terminalCommands" name="terminalCommands" rows="8" required><%= terminalCommandsText %></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="buttonAbout">About Button</label>
+            <input type="text" id="buttonAbout" name="buttonAbout" value="<%= home.buttons.about %>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="buttonProjects">Projects Button</label>
+            <input type="text" id="buttonProjects" name="buttonProjects" value="<%= home.buttons.projects %>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="buttonCertificates">Certificates Button</label>
+            <input type="text" id="buttonCertificates" name="buttonCertificates" value="<%= home.buttons.certificates %>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="buttonContact">Contact Button</label>
+            <input type="text" id="buttonContact" name="buttonContact" value="<%= home.buttons.contact %>" required>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save Home Settings</button>
+            <a href="/admin" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<%- include('partials/adminFooter') %>

@@ -1,0 +1,140 @@
+<%- include('partials/adminHeader') %>
+
+<div class="form-container">
+    <form method="POST" action="/admin/contact-page?_method=PUT" class="edit-form">
+        <div class="form-group">
+            <label for="titleRu">Page Title (RU)</label>
+            <input type="text" id="titleRu" name="titleRu" value="<%= contact.titleRu || contact.title || '' %>" required>
+        </div>
+        <div class="form-group">
+            <label for="titleEn">Page Title (EN)</label>
+            <input type="text" id="titleEn" name="titleEn" value="<%= contact.titleEn || contact.title || '' %>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="descriptionRu">Page Description (RU)</label>
+            <input type="text" id="descriptionRu" name="descriptionRu" value="<%= contact.descriptionRu || contact.description || '' %>" required>
+        </div>
+        <div class="form-group">
+            <label for="descriptionEn">Page Description (EN)</label>
+            <input type="text" id="descriptionEn" name="descriptionEn" value="<%= contact.descriptionEn || contact.description || '' %>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="infoTitleRu">Info Block Title (RU)</label>
+            <input type="text" id="infoTitleRu" name="infoTitleRu" value="<%= contact.infoTitleRu || contact.infoTitle || '' %>" required>
+        </div>
+        <div class="form-group">
+            <label for="infoTitleEn">Info Block Title (EN)</label>
+            <input type="text" id="infoTitleEn" name="infoTitleEn" value="<%= contact.infoTitleEn || contact.infoTitle || '' %>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="emailLabelRu">Email Label (RU)</label>
+            <input type="text" id="emailLabelRu" name="emailLabelRu" value="<%= contact.emailLabelRu || contact.emailLabel || '' %>" required>
+        </div>
+        <div class="form-group">
+            <label for="emailLabelEn">Email Label (EN)</label>
+            <input type="text" id="emailLabelEn" name="emailLabelEn" value="<%= contact.emailLabelEn || contact.emailLabel || '' %>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="emailValue">Email Address</label>
+            <input type="email" id="emailValue" name="emailValue" value="<%= contact.emailValue %>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="telegramLabelRu">Telegram Label (RU)</label>
+            <input type="text" id="telegramLabelRu" name="telegramLabelRu" value="<%= contact.telegramLabelRu || contact.telegramLabel || '' %>" required>
+        </div>
+        <div class="form-group">
+            <label for="telegramLabelEn">Telegram Label (EN)</label>
+            <input type="text" id="telegramLabelEn" name="telegramLabelEn" value="<%= contact.telegramLabelEn || contact.telegramLabel || '' %>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="telegramUrl">Telegram URL</label>
+            <input type="url" id="telegramUrl" name="telegramUrl" value="<%= contact.telegramUrl %>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="linkedinLabelRu">LinkedIn Label (RU)</label>
+            <input type="text" id="linkedinLabelRu" name="linkedinLabelRu" value="<%= contact.linkedinLabelRu || contact.linkedinLabel || '' %>" required>
+        </div>
+        <div class="form-group">
+            <label for="linkedinLabelEn">LinkedIn Label (EN)</label>
+            <input type="text" id="linkedinLabelEn" name="linkedinLabelEn" value="<%= contact.linkedinLabelEn || contact.linkedinLabel || '' %>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="linkedinUrl">LinkedIn URL</label>
+            <input type="url" id="linkedinUrl" name="linkedinUrl" value="<%= contact.linkedinUrl %>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="githubLabelRu">GitHub Label (RU)</label>
+            <input type="text" id="githubLabelRu" name="githubLabelRu" value="<%= contact.githubLabelRu || contact.githubLabel || '' %>" required>
+        </div>
+        <div class="form-group">
+            <label for="githubLabelEn">GitHub Label (EN)</label>
+            <input type="text" id="githubLabelEn" name="githubLabelEn" value="<%= contact.githubLabelEn || contact.githubLabel || '' %>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="githubUrl">GitHub URL</label>
+            <input type="url" id="githubUrl" name="githubUrl" value="<%= contact.githubUrl %>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="formNameLabelRu">Form Name Label (RU)</label>
+            <input type="text" id="formNameLabelRu" name="formNameLabelRu" value="<%= contact.formNameLabelRu || contact.formNameLabel || '' %>" required>
+        </div>
+        <div class="form-group">
+            <label for="formNameLabelEn">Form Name Label (EN)</label>
+            <input type="text" id="formNameLabelEn" name="formNameLabelEn" value="<%= contact.formNameLabelEn || contact.formNameLabel || '' %>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="formEmailLabelRu">Form Email Label (RU)</label>
+            <input type="text" id="formEmailLabelRu" name="formEmailLabelRu" value="<%= contact.formEmailLabelRu || contact.formEmailLabel || '' %>" required>
+        </div>
+        <div class="form-group">
+            <label for="formEmailLabelEn">Form Email Label (EN)</label>
+            <input type="text" id="formEmailLabelEn" name="formEmailLabelEn" value="<%= contact.formEmailLabelEn || contact.formEmailLabel || '' %>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="formMessageLabelRu">Form Message Label (RU)</label>
+            <input type="text" id="formMessageLabelRu" name="formMessageLabelRu" value="<%= contact.formMessageLabelRu || contact.formMessageLabel || '' %>" required>
+        </div>
+        <div class="form-group">
+            <label for="formMessageLabelEn">Form Message Label (EN)</label>
+            <input type="text" id="formMessageLabelEn" name="formMessageLabelEn" value="<%= contact.formMessageLabelEn || contact.formMessageLabel || '' %>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="submitLabelRu">Submit Button Label (RU)</label>
+            <input type="text" id="submitLabelRu" name="submitLabelRu" value="<%= contact.submitLabelRu || contact.submitLabel || '' %>" required>
+        </div>
+        <div class="form-group">
+            <label for="submitLabelEn">Submit Button Label (EN)</label>
+            <input type="text" id="submitLabelEn" name="submitLabelEn" value="<%= contact.submitLabelEn || contact.submitLabel || '' %>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="successMessageRu">Success Message (RU)</label>
+            <input type="text" id="successMessageRu" name="successMessageRu" value="<%= contact.successMessageRu || contact.successMessage || '' %>" required>
+        </div>
+        <div class="form-group">
+            <label for="successMessageEn">Success Message (EN)</label>
+            <input type="text" id="successMessageEn" name="successMessageEn" value="<%= contact.successMessageEn || contact.successMessage || '' %>" required>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save Contact Settings</button>
+            <a href="/admin" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<%- include('partials/adminFooter') %>

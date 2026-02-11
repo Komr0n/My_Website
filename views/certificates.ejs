@@ -1,17 +1,20 @@
 <%- include('partials/header') %>
+<% const isEn = currentLang === 'en'; %>
 
 <main class="page-container">
     <div class="container">
         <section class="certificates-section">
-            <h1>Certificates</h1>
-            <p class="section-description">Professional certifications and achievements in networking and security.</p>
+            <h1><%= isEn ? 'Certificates' : 'Сертификаты' %></h1>
+            <p class="section-description"><%= isEn
+                ? 'Professional certifications and achievements in networking and security.'
+                : 'Профессиональные сертификаты и достижения в сфере сетей и безопасности.' %></p>
             
             <div class="certificates-grid">
                 <% if (certificates && certificates.length > 0) { %>
                     <% certificates.forEach(cert => { %>
-                        <div class="certificate-card" onclick="openModal('<%= cert.image %>', '<%= cert.title %>')">
+                        <div class="certificate-card js-open-cert-modal" data-image="<%= cert.image %>" data-title="<%= cert.title %>">
                             <div class="certificate-image">
-                                <img src="<%= cert.image %>" alt="<%= cert.title %>">
+                                <img src="<%= cert.image %>" alt="<%= cert.title %>" loading="lazy" decoding="async">
                             </div>
                             <div class="certificate-info">
                                 <h3><%= cert.title %></h3>
@@ -19,14 +22,14 @@
                                     <p><%= cert.description %></p>
                                 <% } %>
                                 <% if (cert.issueDate) { %>
-                                    <p class="cert-date">Issued: <%= new Date(cert.issueDate).toLocaleDateString() %></p>
+                                    <p class="cert-date"><%= isEn ? 'Issued:' : 'Выдан:' %> <%= new Date(cert.issueDate).toLocaleDateString() %></p>
                                 <% } %>
                             </div>
                         </div>
                     <% }); %>
                 <% } else { %>
                     <div class="empty-state">
-                        <p>No certificates available.</p>
+                        <p><%= isEn ? 'No certificates available.' : 'Сертификаты пока не добавлены.' %></p>
                     </div>
                 <% } %>
             </div>
@@ -41,7 +44,7 @@
     <div class="modal-caption" id="modalCaption"></div>
 </div>
 
-<script>
+<script nonce="<%= cspNonce %>">
 function openModal(imageSrc, title) {
     const modal = document.getElementById('imageModal');
     const modalImg = document.getElementById('modalImage');
@@ -49,11 +52,16 @@ function openModal(imageSrc, title) {
     
     modal.style.display = 'block';
     modalImg.src = imageSrc;
-    modalCaption.innerHTML = title;
+    modalCaption.textContent = title;
 }
 
 const modal = document.getElementById('imageModal');
 const closeBtn = document.querySelector('.close');
+document.querySelectorAll('.js-open-cert-modal').forEach((card) => {
+    card.addEventListener('click', () => {
+        openModal(card.getAttribute('data-image') || '', card.getAttribute('data-title') || '');
+    });
+});
 
 closeBtn.onclick = function() {
     modal.style.display = 'none';

@@ -1,0 +1,42 @@
+<%- include('partials/adminHeader') %>
+
+<div class="manage-container">
+    <div class="manage-header">
+        <h2>Audit Logs</h2>
+    </div>
+
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>When</th>
+                    <th>User</th>
+                    <th>Role</th>
+                    <th>Action</th>
+                    <th>Status</th>
+                    <th>Path</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (logs && logs.length > 0) { %>
+                    <% logs.forEach(log => { %>
+                        <tr>
+                            <td><%= new Date(log.createdAt).toLocaleString('ru-RU') %></td>
+                            <td><%= log.username %></td>
+                            <td><%= log.role %></td>
+                            <td><%= log.method %></td>
+                            <td><%= log.statusCode %></td>
+                            <td style="max-width: 360px; overflow-wrap: anywhere;"><%= log.path %></td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="6" class="text-center">No audit records yet.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<%- include('partials/adminFooter') %>

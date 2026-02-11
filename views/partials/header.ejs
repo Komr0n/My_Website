@@ -1,10 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<% const activeLang = (typeof currentLang !== 'undefined' && currentLang === 'en') ? 'en' : 'ru'; %>
+<html lang="<%= activeLang %>">
 <head>
+    <% const seoSettings = (siteSettings && siteSettings.seo) ? siteSettings.seo : {}; %>
+    <% const seoKey = typeof seoPageKey !== 'undefined' ? seoPageKey : 'home'; %>
+    <% const seoByPage = seoSettings[seoKey] || {}; %>
+    <% const seoCustom = (typeof seoMeta !== 'undefined' && seoMeta) ? seoMeta : {}; %>
+    <% const defaultTitle = typeof title !== 'undefined' ? title : 'Digital SysAdmin'; %>
+    <% const metaTitle = seoCustom.metaTitle || seoByPage.metaTitle || `${defaultTitle} - Komron Juraev`; %>
+    <% const metaDescription = seoCustom.metaDescription || seoByPage.metaDescription || 'Portfolio of Komron Juraev - System Administrator, Network Specialist, Security Enthusiast'; %>
+    <% const ogImage = seoCustom.ogImage || seoByPage.ogImage || '/images/default-project.svg'; %>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Portfolio of Komron Juraev - System Administrator, Network Specialist, Security Enthusiast">
-    <title><%= typeof title !== 'undefined' ? title : 'Digital SysAdmin' %> - Komron Juraev</title>
+    <meta name="description" content="<%= metaDescription %>">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="<%= metaTitle %>">
+    <meta property="og:description" content="<%= metaDescription %>">
+    <meta property="og:image" content="<%= ogImage %>">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<%= metaTitle %>">
+    <meta name="twitter:description" content="<%= metaDescription %>">
+    <meta name="twitter:image" content="<%= ogImage %>">
+    <title><%= metaTitle %></title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,20 +29,39 @@
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Roboto+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <% const navSettings = (siteSettings && siteSettings.navigation) ? siteSettings.navigation : {}; %>
+    <% const navLinks = Array.isArray(navSettings.links) && navSettings.links.length ? navSettings.links : [
+        { label: 'Home', url: '/' },
+        { label: 'About', url: '/about' },
+        { label: 'Projects', url: '/projects' },
+        { label: 'Certificates', url: '/certificates' },
+        { label: 'Contact', url: '/contact' },
+        { label: 'Blog', url: '/blog' }
+    ]; %>
+    <% const currentPathValue = typeof currentPath !== 'undefined' ? currentPath : '/'; %>
+    <% const withLang = (url, lang) => `${url}${url.includes('?') ? '&' : '?'}lang=${lang}`; %>
     <nav class="navbar">
         <div class="container">
             <div class="nav-brand">
-                <span class="glitch-text">$ cd ~/komron</span>
+                <span class="glitch-text"><%= navSettings.brandText || '$ cd ~/komron' %></span>
             </div>
-            <ul class="nav-menu">
-                <li><a href="/">Home</a></li>
-                <li><a href="/about">About</a></li>
-                <li><a href="/projects">Projects</a></li>
-                <li><a href="/certificates">Certificates</a></li>
-                <li><a href="/contact">Contact</a></li>
-                <li><a href="/blog">Blog</a></li>
-                <li><button id="themeToggle" class="theme-toggle" title="Toggle theme">☾</button></li>
+            <button class="nav-toggle" id="navToggle" type="button" aria-label="Toggle navigation" aria-controls="navMenu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <% navLinks.forEach(link => { %>
+                    <li><a href="<%= withLang(link.url, activeLang) %>"><%= link.label %></a></li>
+                <% }) %>
+                <li>
+                    <a href="<%= withLang(currentPathValue, 'ru') %>" style="<%= activeLang === 'ru' ? 'font-weight:700;' : '' %>">RU</a>
+                    /
+                    <a href="<%= withLang(currentPathValue, 'en') %>" style="<%= activeLang === 'en' ? 'font-weight:700;' : '' %>">EN</a>
+                </li>
+                <% if (navSettings.showThemeToggle !== false) { %>
+                    <li><button id="themeToggle" class="theme-toggle" title="Toggle theme">&#9789;</button></li>
+                <% } %>
             </ul>
         </div>
     </nav>
-

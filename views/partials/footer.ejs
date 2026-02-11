@@ -1,34 +1,89 @@
+    <% const footerSettings = (siteSettings && siteSettings.footer) ? siteSettings.footer : {}; %>
+    <% const footerQuickLinks = Array.isArray(footerSettings.quickLinks) ? footerSettings.quickLinks : []; %>
+    <% const footerSocialLinks = Array.isArray(footerSettings.socialLinks) ? footerSettings.socialLinks : []; %>
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h3>Digital SysAdmin</h3>
-                    <p>System Administrator & Security Enthusiast</p>
+                    <h3><%= footerSettings.brandTitle || 'Digital SysAdmin' %></h3>
+                    <p><%= footerSettings.brandDescription || 'System Administrator & Security Enthusiast' %></p>
                 </div>
                 <div class="footer-section">
                     <h3>Quick Links</h3>
                     <ul>
-                        <li><a href="/">Home</a></li>
-                        <li><a href="/about">About</a></li>
-                        <li><a href="/projects">Projects</a></li>
-                        <li><a href="/certificates">Certificates</a></li>
+                        <% if (footerQuickLinks.length) { %>
+                            <% footerQuickLinks.forEach(link => { %>
+                                <li><a href="<%= link.url %>"><%= link.label %></a></li>
+                            <% }) %>
+                        <% } else { %>
+                            <li><a href="/">Home</a></li>
+                            <li><a href="/about">About</a></li>
+                            <li><a href="/projects">Projects</a></li>
+                            <li><a href="/certificates">Certificates</a></li>
+                        <% } %>
                     </ul>
                 </div>
                 <div class="footer-section">
                     <h3>Connect</h3>
                     <ul>
-                        <li><a href="https://t.me/komron" target="_blank">Telegram</a></li>
-                        <li><a href="https://github.com/komron" target="_blank">GitHub</a></li>
-                        <li><a href="https://linkedin.com/in/komron" target="_blank">LinkedIn</a></li>
+                        <% if (footerSocialLinks.length) { %>
+                            <% footerSocialLinks.forEach(link => { %>
+                                <li><a href="<%= link.url %>" target="_blank" rel="noopener noreferrer"><%= link.label %></a></li>
+                            <% }) %>
+                        <% } else { %>
+                            <li><a href="https://t.me/komron" target="_blank" rel="noopener noreferrer">Telegram</a></li>
+                            <li><a href="https://github.com/komron" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+                            <li><a href="https://linkedin.com/in/komron" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+                        <% } %>
                     </ul>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 Komron Juraev. All rights reserved.</p>
+                <p>&copy; <%= footerSettings.copyrightYear || new Date().getFullYear() %> <%= footerSettings.copyrightName || 'Komron Juraev' %>. <%= footerSettings.copyrightText || 'All rights reserved.' %></p>
             </div>
         </div>
     </footer>
-    <script src="/js/main.js"></script>
+    <script nonce="<%= cspNonce %>">
+    window.__CSRF_TOKEN = '<%= csrfToken %>';
+    (function() {
+        function ensureFormToken(form) {
+            if (!form) {
+                return;
+            }
+            var method = (form.getAttribute('method') || 'GET').toUpperCase();
+            if (method === 'GET') {
+                return;
+            }
+            if (form.querySelector('input[name=\"_csrf\"]')) {
+                return;
+            }
+            var tokenInput = document.createElement('input');
+            tokenInput.type = 'hidden';
+            tokenInput.name = '_csrf';
+            tokenInput.value = window.__CSRF_TOKEN;
+            form.appendChild(tokenInput);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('form').forEach(ensureFormToken);
+        });
+
+        var originalFetch = window.fetch;
+        window.fetch = function(resource, options) {
+            var nextOptions = options ? Object.assign({}, options) : {};
+            nextOptions.method = (nextOptions.method || 'GET').toUpperCase();
+            if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(nextOptions.method)) {
+                var headers = new Headers(nextOptions.headers || {});
+                if (!headers.has('CSRF-Token')) {
+                    headers.set('CSRF-Token', window.__CSRF_TOKEN);
+                }
+                nextOptions.headers = headers;
+            }
+            return originalFetch(resource, nextOptions);
+        };
+    })();
+    </script>
+    <script nonce="<%= cspNonce %>" src="/js/main.js"></script>
 </body>
 </html>
 

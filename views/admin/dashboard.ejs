@@ -6,60 +6,68 @@
         <div class="card-info">
             <h3><%= projectsCount %></h3>
             <p>Projects</p>
-            <a href="/admin/projects" class="card-link">Manage →</a>
+            <a href="/admin/projects" class="card-link">Manage -></a>
         </div>
     </div>
-    
+
     <div class="dashboard-card">
         <div class="card-icon">🏆</div>
         <div class="card-info">
             <h3><%= certificatesCount %></h3>
             <p>Certificates</p>
-            <a href="/admin/certificates" class="card-link">Manage →</a>
+            <a href="/admin/certificates" class="card-link">Manage -></a>
         </div>
     </div>
-    
+
     <div class="dashboard-card">
         <div class="card-icon">📝</div>
         <div class="card-info">
             <h3><%= postsCount %></h3>
             <p>Posts</p>
-            <a href="/admin/posts" class="card-link">Manage →</a>
+            <a href="/admin/posts" class="card-link">Manage -></a>
         </div>
     </div>
-    
+
     <div class="dashboard-card">
-        <div class="card-icon">T</div>
+        <div class="card-icon">✅</div>
         <div class="card-info">
             <h3><%= tasksCount %></h3>
             <p>Tasks</p>
             <a href="/admin/tasks" class="card-link">Manage -></a>
         </div>
     </div>
-    
-    <div class="dashboard-card">
-        <div class="card-icon">💬</div>
-        <div class="card-info">
-            <h3><%= messagesCount %></h3>
-            <p>New Messages</p>
-            <a href="/admin/messages" class="card-link">View →</a>
+
+    <% if (isAdmin) { %>
+        <div class="dashboard-card">
+            <div class="card-icon">💬</div>
+            <div class="card-info">
+                <h3><%= messagesCount %></h3>
+                <p>New Messages</p>
+                <a href="/admin/messages" class="card-link">View -></a>
+            </div>
         </div>
-    </div>
+    <% } %>
 </div>
 
 <div class="quick-actions">
     <h2>Quick Actions</h2>
     <div class="actions-grid">
+        <% if (isAdmin) { %>
+            <a href="/admin/home" class="action-btn">Edit Home</a>
+            <a href="/admin/contact-page" class="action-btn">Edit Contact</a>
+            <a href="/admin/navigation" class="action-btn">Edit Navigation</a>
+            <a href="/admin/seo" class="action-btn">Edit SEO</a>
+            <a href="/admin/footer" class="action-btn">Edit Footer</a>
+            <a href="/admin/backups" class="action-btn">Backups</a>
+            <a href="/admin/audit" class="action-btn">Audit Logs</a>
+            <a href="/admin/users" class="action-btn">Manage Users</a>
+        <% } %>
         <a href="/admin/projects/new" class="action-btn">+ Add Project</a>
         <a href="/admin/certificates" class="action-btn">+ Upload Certificate</a>
         <a href="/admin/posts/new" class="action-btn">+ Create Post</a>
         <a href="/admin/tasks/new" class="action-btn">+ Add Task</a>
-        <a href="/admin/about" class="action-btn">✏️ Edit About</a>
+        <a href="/admin/about" class="action-btn">Edit About</a>
     </div>
 </div>
 
 <%- include('partials/adminFooter') %>
-
-
-
-

@@ -6,6 +6,8 @@ const Post = require('./Post');
 const ContactMessage = require('./ContactMessage');
 const Task = require('./Task');
 const Media = require('./Media');
+const SiteSetting = require('./SiteSetting');
+const AuditLog = require('./AuditLog');
 
 module.exports = {
     User,
@@ -15,7 +17,9 @@ module.exports = {
     Post,
     ContactMessage,
     Task,
-    Media
+    Media,
+    SiteSetting,
+    AuditLog
 };
 
 

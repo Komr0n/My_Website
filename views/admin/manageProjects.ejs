@@ -5,7 +5,7 @@
         <h2>Manage Projects</h2>
         <a href="/admin/projects/new" class="btn btn-primary">+ Add Project</a>
     </div>
-    
+
     <div class="table-container">
         <table class="data-table">
             <thead>
@@ -24,9 +24,9 @@
                             <td><%= project.title %></td>
                             <td><%= project.technologies %></td>
                             <td class="actions">
-                                <a href="/admin/projects/<%= project.id %>/edit" class="btn btn-small">✏️ Edit</a>
-                                <form action="/admin/projects/<%= project.id %>?_method=DELETE" method="POST" style="display: inline;">
-                                    <button type="submit" class="btn btn-small btn-danger" onclick="return confirm('Are you sure?')">🗑️ Delete</button>
+                                <a href="/admin/projects/<%= project.id %>/edit" class="btn btn-small">Edit</a>
+                                <form action="/admin/projects/<%= project.id %>?_method=DELETE" method="POST" style="display: inline;" data-confirm="Are you sure?">
+                                    <button type="submit" class="btn btn-small btn-danger">Delete</button>
                                 </form>
                             </td>
                         </tr>
@@ -42,7 +42,3 @@
 </div>
 
 <%- include('partials/adminFooter') %>
-
-
-
-

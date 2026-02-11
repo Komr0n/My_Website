@@ -1,5 +1,11 @@
 <%- include('partials/header') %>
 
+<% const homeSettings = (siteSettings && siteSettings.home) ? siteSettings.home : null; %>
+<% const terminalCommands = (homeSettings && Array.isArray(homeSettings.terminalCommands) && homeSettings.terminalCommands.length) ? homeSettings.terminalCommands : ['systemctl status network', 'cat /etc/hostname', 'ping -c 4 8.8.8.8', 'ls -la /opt', 'ps aux | grep nginx', 'whoami && pwd']; %>
+<% const heroTitle = homeSettings && homeSettings.heroTitle ? homeSettings.heroTitle : (about ? `${about.title} - ${about.content}` : 'System Administrator & Security Enthusiast'); %>
+<% const heroDescription = homeSettings && homeSettings.heroDescription ? homeSettings.heroDescription : 'Networking | Automation | Information Security'; %>
+<% const homeButtons = (homeSettings && homeSettings.buttons) ? homeSettings.buttons : { about: 'About Me', projects: 'View Projects', certificates: 'Certificates', contact: 'Contact' }; %>
+
 <main class="hero">
     <div class="hero-content">
         <div class="terminal-window">
@@ -17,14 +23,14 @@
             </div>
         </div>
         
-        <h1 class="hero-title">Комрон Жураев — System Administrator & Security Enthusiast</h1>
-        <p class="hero-description">Networking | Automation | Information Security</p>
+        <h1 class="hero-title"><%= heroTitle %></h1>
+        <p class="hero-description"><%= heroDescription %></p>
         
         <div class="hero-buttons">
-            <a href="/about" class="btn btn-primary">About Me</a>
-            <a href="/projects" class="btn btn-secondary">View Projects</a>
-            <a href="/certificates" class="btn btn-secondary">Certificates</a>
-            <a href="/contact" class="btn btn-outline">Contact</a>
+            <a href="/about" class="btn btn-primary"><%= homeButtons.about %></a>
+            <a href="/projects" class="btn btn-secondary"><%= homeButtons.projects %></a>
+            <a href="/certificates" class="btn btn-secondary"><%= homeButtons.certificates %></a>
+            <a href="/contact" class="btn btn-outline"><%= homeButtons.contact %></a>
         </div>
     </div>
     
@@ -33,22 +39,32 @@
     </div>
 </main>
 
-<script>
+<script nonce="<%= cspNonce %>">
 document.addEventListener('DOMContentLoaded', function() {
-    const texts = [
-        'systemctl status network',
-        'cat /etc/hostname',
-        'ping -c 4 8.8.8.8',
-        'ls -la /opt',
-        'ps aux | grep nginx',
-        'whoami && pwd'
-    ];
+    const texts = <%- JSON.stringify(terminalCommands) %>;
+    const typingElement = document.getElementById('typing-text');
+    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (!typingElement || !texts.length) {
+        return;
+    }
+
+    if (reduceMotion) {
+        typingElement.textContent = texts[0];
+        return;
+    }
+
     let textIndex = 0;
     let charIndex = 0;
     let isDeleting = false;
-    const typingElement = document.getElementById('typing-text');
+    let timerId = null;
     
     function typeText() {
+        if (document.hidden) {
+            timerId = setTimeout(typeText, 400);
+            return;
+        }
+
         const currentText = texts[textIndex];
         
         if (isDeleting) {
@@ -65,14 +81,20 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (charIndex === currentText.length) {
                 isDeleting = true;
-                setTimeout(typeText, 2000);
+                timerId = setTimeout(typeText, 2000);
                 return;
             }
         }
         
-        setTimeout(typeText, isDeleting ? 50 : 100);
+        timerId = setTimeout(typeText, isDeleting ? 50 : 100);
     }
     
+    window.addEventListener('beforeunload', function() {
+        if (timerId) {
+            clearTimeout(timerId);
+        }
+    });
+
     typeText();
 });
 </script>

@@ -15,11 +15,14 @@
     width: 260px;
     background: #0d1117;
     border-right: 1px solid #21262d;
-    min-height: 100vh;
+    height: 100vh;
     position: fixed;
     left: 0;
     top: 0;
+    bottom: 0;
     overflow-y: auto;
+    overscroll-behavior: contain;
+    z-index: 100;
 }
 
 .sidebar-header {
@@ -42,6 +45,7 @@
 .sidebar-nav ul {
     list-style: none;
     padding: 0;
+    margin: 0;
 }
 
 .nav-link {
@@ -75,12 +79,17 @@
     flex: 1;
     margin-left: 260px;
     padding: 2rem;
+    min-width: 0;
 }
 
 .admin-header {
     margin-bottom: 2rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid #21262d;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
 }
 
 .admin-header h1 {
@@ -277,6 +286,10 @@
 
 .card-icon {
     font-size: 2.5rem;
+    color: #c9d1d9;
+    line-height: 1;
+    min-width: 56px;
+    text-align: center;
 }
 
 .card-info h3 {

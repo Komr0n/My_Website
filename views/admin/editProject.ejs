@@ -5,18 +5,33 @@
     
     <form method="POST" action="<%= project ? `/admin/projects/${project.id}?_method=PUT` : '/admin/projects' %>" class="edit-form">
         <div class="form-group">
-            <label for="title">Title</label>
+            <label for="title">Title (RU)</label>
             <input type="text" id="title" name="title" value="<%= project ? project.title : '' %>" required>
         </div>
-        
+
         <div class="form-group">
-            <label for="description">Description</label>
-            <textarea id="description" name="description" rows="4" required><%= project ? project.description : '' %></textarea>
+            <label for="titleEn">Title (EN)</label>
+            <input type="text" id="titleEn" name="titleEn" value="<%= project ? (project.titleEn || '') : '' %>" required>
         </div>
         
         <div class="form-group">
-            <label for="technologies">Technologies (comma-separated)</label>
+            <label for="description">Description (RU)</label>
+            <textarea id="description" name="description" rows="4" required><%= project ? project.description : '' %></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="descriptionEn">Description (EN)</label>
+            <textarea id="descriptionEn" name="descriptionEn" rows="4" required><%= project ? (project.descriptionEn || '') : '' %></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="technologies">Technologies (RU, comma-separated)</label>
             <input type="text" id="technologies" name="technologies" value="<%= project ? project.technologies : '' %>" placeholder="Python, FastAPI, PostgreSQL" required>
+        </div>
+
+        <div class="form-group">
+            <label for="technologiesEn">Technologies (EN, comma-separated)</label>
+            <input type="text" id="technologiesEn" name="technologiesEn" value="<%= project ? (project.technologiesEn || '') : '' %>" placeholder="Python, FastAPI, PostgreSQL" required>
         </div>
         
         <div class="form-group">
