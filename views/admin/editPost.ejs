@@ -157,7 +157,11 @@
     <% const coverPreview = post && (post.coverImage || post.featuredImage) ? (post.coverImage || post.featuredImage) : null; %>
     <% const publishedValue = post && post.publishedAt ? new Date(post.publishedAt).toISOString().slice(0, 16) : ''; %>
 
-    <form method="POST" action="<%= post ? `/admin/posts/${post.id}?_method=PUT` : '/admin/posts' %>" enctype="multipart/form-data" class="edit-form">
+    <% const postAction = post
+        ? `/admin/posts/${post.id}?_method=PUT&_csrf=${encodeURIComponent(csrfToken)}`
+        : `/admin/posts?_csrf=${encodeURIComponent(csrfToken)}`; %>
+    <form method="POST" action="<%= postAction %>" enctype="multipart/form-data" class="edit-form">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <div class="form-group">
             <label for="title">Title</label>
             <input type="text" id="title" name="title" value="<%= post ? post.title : '' %>" required>

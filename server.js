@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const crypto = require('crypto');
+const os = require('os');
 const session = require('express-session');
 const methodOverride = require('method-override');
 const compression = require('compression');
@@ -143,6 +144,9 @@ const { csrfSynchronisedProtection, generateToken } = csrfSync({
         if (req.body && req.body._csrf) {
             return req.body._csrf;
         }
+        if (req.query && req.query._csrf) {
+            return req.query._csrf;
+        }
         return req.headers['csrf-token'] || req.headers['x-csrf-token'];
     }
 });
@@ -191,9 +195,21 @@ const dbInit = shouldSync ? sequelize.sync({ force: false }) : sequelize.authent
 dbInit.then(() => {
     console.log(shouldSync ? 'Database synchronized' : 'Database connection established');
 
-    app.listen(PORT, () => {
+    app.listen(PORT, '0.0.0.0', () => {
+        const nets = os.networkInterfaces();
+        const lanIps = [];
+        Object.keys(nets).forEach((name) => {
+            (nets[name] || []).forEach((net) => {
+                if (net && net.family === 'IPv4' && !net.internal) {
+                    lanIps.push(net.address);
+                }
+            });
+        });
         console.log(`Digital SysAdmin Portfolio is running on http://localhost:${PORT}`);
         console.log(`Admin panel: http://localhost:${PORT}/auth/admin/login`);
+        lanIps.forEach((ip) => {
+            console.log(`LAN: http://${ip}:${PORT}`);
+        });
         console.log('Default users are not auto-created for security.');
     });
 }).catch(err => {

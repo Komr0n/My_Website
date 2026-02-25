@@ -30,7 +30,8 @@
 }
 
 body {
-    font-family: 'Roboto Mono', 'Fira Code', monospace;
+    font-family: 'Roboto Mono', 'Fira Code', 'Cascadia Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Monaco, monospace;
+    font-size-adjust: 0.56;
     background: var(--bg-primary);
     color: var(--text-primary);
     line-height: 1.6;

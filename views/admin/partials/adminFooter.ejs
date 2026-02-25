@@ -20,9 +20,24 @@
             tokenInput.name = '_csrf';
             tokenInput.value = window.__CSRF_TOKEN;
             form.appendChild(tokenInput);
+
+            // multipart forms are parsed by multer later in the chain, so put token in query too.
+            var enctype = (form.getAttribute('enctype') || '').toLowerCase();
+            if (enctype.indexOf('multipart/form-data') !== -1) {
+                try {
+                    var action = form.getAttribute('action') || window.location.pathname;
+                    var url = new URL(action, window.location.origin);
+                    if (!url.searchParams.get('_csrf')) {
+                        url.searchParams.set('_csrf', window.__CSRF_TOKEN);
+                        form.setAttribute('action', url.pathname + url.search);
+                    }
+                } catch (e) {
+                    // no-op
+                }
+            }
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
+        function initAdminFormsAndUi() {
             document.querySelectorAll('form').forEach(ensureFormToken);
 
             document.querySelectorAll('form[data-confirm]').forEach(function(form) {
@@ -57,7 +72,13 @@
                     }
                 });
             });
-        });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initAdminFormsAndUi);
+        } else {
+            initAdminFormsAndUi();
+        }
 
         var originalFetch = window.fetch;
         window.fetch = function(resource, options) {
